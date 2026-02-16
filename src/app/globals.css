@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
- --color-primary: #4f46e5;   /* Indigo 600 */
-  --color-secondary: #facc15; /* Yellow 400 */
+ --color-primary: #4f46e5;   
+  --color-secondary: #facc15; 
   --color-background: #ffffff;
   --color-foreground: #171717;
   --radius: 0.625rem;
