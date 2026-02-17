@@ -10,7 +10,7 @@ export function ProductTable({ items, loading }) {
     return "bg-slate-50 text-slate-600";
   };
 
-  if (loading) return <div className="p-20 text-center animate-pulse font-bold text-slate-400">LOADING CATALOG...</div>;
+  if (loading) return <div className="p-20 text-center animate-pulse font-bold text-slate-400">Loading...</div>;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

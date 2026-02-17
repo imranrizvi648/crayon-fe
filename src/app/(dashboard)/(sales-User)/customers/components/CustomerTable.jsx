@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { User, MapPin, Globe, Building2, ChevronLeft, ChevronRight, Edit3 } from "lucide-react";
 
 export function CustomerTable({ items, loading, pagination, onPageChange }) {
-  if (loading) return <div className="p-10 text-center animate-pulse font-bold text-[#1a3556]">SYNCING CUSTOMERS...</div>;
+  if (loading) return <div className="p-10 text-center animate-pulse font-bold text-[#1a3556]">Loading...</div>;
   if (!items.length) return <div className="p-10 text-center text-slate-500 italic">No customers found.</div>;
 
   const totalPages = Math.ceil(pagination.total / pagination.limit) || 1;

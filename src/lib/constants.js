@@ -23,6 +23,8 @@ export const ENDPOINTS = {
   DASHBOARD: {
  DASHBOARD_SUMMARY: `${API_BASE_URL}dashboard/summary`,
  RECENT_SHEETS: `${API_BASE_URL}dashboard/recent-sheets`, 
+ USER_ACTIVITY: (userId, days) => 
+      `${API_BASE_URL}audit-logs/user/${userId}/activity?days=${days}`,
 
    
   }, 
@@ -32,6 +34,7 @@ export const ENDPOINTS = {
   COSTING_SHEETS: {
     CREATE: `${API_BASE_URL}costing-sheets`,
     LIST: `${API_BASE_URL}costing-sheets`,
+     GET_BY_ID: (id) => `${API_BASE_URL}costing-sheets/${id}`,
     UPDATE: (id) => `${API_BASE_URL}costing-sheets/${id}`,
     DELETE: (id) => `${API_BASE_URL}costing-sheets/${id}`,
   
@@ -49,6 +52,14 @@ export const ENDPOINTS = {
   PRODUCT: {
     LIST: `${API_BASE_URL}products`,
   },
+
+
+
+// WORKFLOW
+WORKFLOW: {
+  BY_COSTING_SHEET: (id) => `${API_BASE_URL}costing-sheets/${id}/workflow`,
+  LIST: `${API_BASE_URL}costing-sheets`,
+},
 
 
 }

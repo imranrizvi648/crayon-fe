@@ -9,13 +9,28 @@ export const useDashboard = () => {
     user: { name: "Ahmed Hassan", region: "Middle East (UAE)", role: "Senior Sales Representative" },
     stats: { totalSheets: 0, pending: 0, approvalRate: 0, totalValue: "0" },
     sheets: [],
-    activities: [],
+    activities: [], // Activities state
     pagination: { total: 0, page: 1, limit: 5 }
   });
-  
+
   const [loading, setLoading] = useState(true);
   const [sheetsLoading, setSheetsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Helper function to format activity text
+  const formatActivityText = (act) => {
+    const entity = act.entity_type.replace(/_/g, " ").toLowerCase();
+    switch (act.action) {
+      case "APPROVE":
+        return `Sheet #${act.entity_id} was approved by Finance`;
+      case "CREATE":
+        return `New ${entity} #${act.entity_id} was created`;
+      case "STATUS_CHANGE":
+        return `Status of ${entity} #${act.entity_id} was updated`;
+      default:
+        return `${act.action} action on ${entity} #${act.entity_id}`;
+    }
+  };
 
   const fetchSheets = useCallback(async (targetPage = 1) => {
     try {
@@ -24,8 +39,7 @@ export const useDashboard = () => {
         params: { page: targetPage, limit: 5 }
       });
 
-      const sheetsData = res.data.sheets || [];
-      const transformedSheets = sheetsData.map(s => ({
+      const transformedSheets = (res.data.sheets || []).map(s => ({
         id: s.sheet_number,
         client: s.opportunity_name,
         amount: `${new Intl.NumberFormat().format(s.total_eup)} ${s.currency_code}`,
@@ -40,7 +54,6 @@ export const useDashboard = () => {
         pagination: { 
           ...prev.pagination, 
           page: targetPage, 
-          // Check for total_count, otherwise keep previous total
           total: res.data.total_count || prev.pagination.total 
         } 
       }));
@@ -54,13 +67,16 @@ export const useDashboard = () => {
   const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
-      const [summaryRes, sheetsRes] = await Promise.all([
+      // Added Activity API to Promise.all
+      const [summaryRes, sheetsRes, activityRes] = await Promise.all([
         api.get(ENDPOINTS.DASHBOARD.DASHBOARD_SUMMARY),
-        api.get(ENDPOINTS.DASHBOARD.RECENT_SHEETS, { params: { page: 1, limit: 5 } })
+        api.get(ENDPOINTS.DASHBOARD.RECENT_SHEETS, { params: { page: 1, limit: 5 } }),
+        api.get(ENDPOINTS.DASHBOARD.USER_ACTIVITY(1, 30)) // Fetching for User 1, 30 Days
       ]);
 
       const summary = summaryRes.data;
-      
+
+      // 1. Transform Stats
       const transformedStats = {
         totalSheets: summary.total_costing_sheets || 0,
         pending: summary.pending_approvals || 0,
@@ -70,6 +86,7 @@ export const useDashboard = () => {
         totalValue: new Intl.NumberFormat('en-US', { notation: "compact", compactDisplay: "short" }).format(summary.total_pipeline_value || 0),
       };
 
+      // 2. Transform Sheets
       const transformedSheets = (sheetsRes.data.sheets || []).map(s => ({
         id: s.sheet_number,
         client: s.opportunity_name,
@@ -79,19 +96,26 @@ export const useDashboard = () => {
         status: s.status.toLowerCase(),
       }));
 
+      // 3. Transform Activities for the UI
+      const transformedActivities = (activityRes.data.recent_activity || []).map(act => ({
+        type: act.action.toLowerCase(), // 'approve', 'create', 'status_change'
+        text: formatActivityText(act),
+        time: act.created_at, // Pass ISO string to be formatted in component
+      }));
+
       setData(prev => ({
         ...prev,
         stats: transformedStats,
         sheets: transformedSheets,
+        activities: transformedActivities,
         pagination: { 
           page: 1,
           limit: 5,
-          // CRITICAL FIX: Use summary total if API total is missing
           total: sheetsRes.data.total_count || summary.total_costing_sheets || 0 
         }
       }));
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to load data");
+      setError(err.response?.data?.message || "Failed to load dashboard data");
     } finally {
       setLoading(false);
     }

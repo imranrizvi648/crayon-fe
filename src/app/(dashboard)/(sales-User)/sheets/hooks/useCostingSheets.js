@@ -166,12 +166,27 @@ const createSheet = async (payload) => {
 
   useEffect(() => { fetchSheets(1); }, [fetchSheets]);
 
+  // 5. FETCH SINGLE SHEET DETAIL
+  const fetchSheetDetail = useCallback(async (id) => {
+    try {
+      setLoading(true);
+      const res = await api.get(ENDPOINTS.COSTING_SHEETS.GET_BY_ID(id));
+      return { success: true, data: res.data };
+    } catch (err) {
+      toast.error("Failed to fetch sheet details");
+      return { success: false };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return { 
     data, 
     loading, 
     fetchSheets, 
     createSheet, 
     updateSheet, 
-    deleteSheet 
+    deleteSheet,
+    fetchSheetDetail
   };
 };

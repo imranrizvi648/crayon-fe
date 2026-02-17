@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Trash2, Edit, ChevronLeft, ChevronRight, Eye } from "lucide-react";
 
-export function SheetTable({ items, loading, onEdit, onDelete, pagination, onPageChange }) {
-  if (loading) return <div className="p-10 text-center animate-pulse font-bold text-[#1a3556]">SYNCING...</div>;
+export function SheetTable({ items, loading, onEdit, onDelete, onPreview, pagination, onPageChange }) {
+  if (loading) return <div className="p-10 text-center animate-pulse font-bold text-[#1a3556]">Loading...</div>;
   if (!items || items.length === 0) return <div className="p-10 text-center text-slate-500 italic">No sheets found.</div>;
 
   const totalPages = Math.ceil(pagination.total / pagination.limit) || 1;
@@ -70,14 +70,13 @@ export function SheetTable({ items, loading, onEdit, onDelete, pagination, onPag
                     >
                       <Edit size={16} />
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-8 w-8 text-slate-400 hover:text-red-500"
-                      onClick={() => onDelete(sheet.id)}
-                    >
-                      <Trash2 size={16} />
-                    </Button>
+                  <Button 
+  variant="ghost" size="icon" 
+  className="h-8 w-8 text-blue-500" 
+  onClick={() => onPreview(sheet.id)}
+>
+  <Eye size={16} />
+</Button>
                   </div>
                 </div>
               </TableCell>

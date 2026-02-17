@@ -408,7 +408,7 @@ export const SheetCreationWizard = ({ isOpen, onClose, template, onSubmit }) => 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[1450px] min-w-[1100px] w-[95vw] p-0 border-none rounded overflow-hidden shadow-2xl flex flex-col max-h-[92vh] bg-white">
+      <DialogContent className="max-w-[1450px] min-w-[1100px] w-[95vw] p-0 border-none rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] bg-white">
         
         {/* Fix: Accessibility Header (Hidden from UI but visible to Screen Readers) */}
         <DialogHeader className="sr-only">

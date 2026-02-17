@@ -5,19 +5,25 @@ import { TemplateModal } from "./components/TemplateModal";
 import { SheetCreationWizard } from "./components/SheetCreationWizard";
 import { SheetTable } from "./components/SheetTable";
 import { EditSheetModal } from "./components/EditSheetModal";
+import { SheetPreviewModal } from "./components/SheetPreviewModal"; // New Import
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
 export default function CostingSheetsList() {
-  const { data, loading, fetchSheets, createSheet, deleteSheet, updateSheet } = useCostingSheets();
+  // 1. fetchSheetDetail ko destructure kiya hook se
+  const { data, loading, fetchSheets, createSheet, deleteSheet, updateSheet, fetchSheetDetail } = useCostingSheets();
   
   // UI States
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [showWizard, setShowWizard] = useState(false);
   
+  // Preview States (Naya logic yahan hai)
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewSheet, setPreviewSheet] = useState(null);
+
   // Edit Modal States
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedSheetId, setSelectedSheetId] = useState(null);
@@ -34,7 +40,17 @@ export default function CostingSheetsList() {
     sales_region: "all" 
   });
 
-  // 1. Handle Edit Logic
+  // --- HANDLERS ---
+
+  // Preview handle karne ka function
+  const handlePreviewClick = async (id) => {
+    const res = await fetchSheetDetail(id);
+    if (res.success) {
+      setPreviewSheet(res.data);
+      setShowPreview(true);
+    }
+  };
+
   const handleEditClick = (sheet) => {
     setSelectedSheetId(sheet.id);
     setEditFormData({
@@ -50,7 +66,6 @@ export default function CostingSheetsList() {
     if (res.success) setIsEditOpen(false);
   };
 
-  // 2. Handle Pagination & Filters
   const handlePageChange = (newPage) => {
     const apiFilters = Object.fromEntries(
       Object.entries(filters).map(([k, v]) => [k, v === "all" ? "" : v])
@@ -74,22 +89,22 @@ export default function CostingSheetsList() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-slate-50 min-h-screen">
+    <div className="p-6 space-y-6 bg-slate-50 min-h-screen text-black">
       {/* Header Section */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-[#1a3556]">Costing Dashboard</h1>
-          <p className="text-sm text-slate-500">Manage FEWA and MCC estimates</p>
+          <p className="text-sm text-slate-500 font-medium">Manage FEWA and MCC estimates</p>
         </div>
         <Button 
           onClick={() => setShowTemplateModal(true)} 
-          className="bg-[#dc1e25] hover:bg-[#b0181e] text-white shadow-lg px-6"
+          className="bg-[#dc1e25] hover:bg-[#b0181e] text-white shadow-lg px-6 font-bold"
         >
           + New Sheet
         </Button>
       </div>
 
-      {/* Triple Filters Bar - Back in Action! */}
+      {/* Filters Bar */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3 bg-white p-3 rounded-xl shadow-sm border border-slate-200">
         <Select value={filters.template_type} onValueChange={(v) => handleFilterChange("template_type", v)}>
           <SelectTrigger className="h-10 text-sm border-slate-200">
@@ -127,7 +142,7 @@ export default function CostingSheetsList() {
         <Button 
           variant="outline" 
           onClick={resetFilters} 
-          className="text-slate-500 border-slate-200 hover:bg-slate-50 gap-2"
+          className="text-slate-500 border-slate-200 hover:bg-slate-50 gap-2 font-semibold"
         >
           <RotateCcw size={14} /> Reset Filters
         </Button>
@@ -142,10 +157,19 @@ export default function CostingSheetsList() {
           onPageChange={handlePageChange} 
           onDelete={deleteSheet}
           onEdit={handleEditClick} 
+          onPreview={handlePreviewClick} // Preview prop yahan pass kiya
         />
       </div>
 
       {/* --- ALL MODALS --- */}
+
+      {/* Preview Modal */}
+      <SheetPreviewModal 
+        isOpen={showPreview} 
+        onClose={() => setShowPreview(false)} 
+        sheet={previewSheet} 
+      />
+
       <EditSheetModal 
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
