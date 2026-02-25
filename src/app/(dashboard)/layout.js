@@ -2,17 +2,20 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
+import { useDashboard } from "@/app/(dashboard)/(sales-User)/dashboard/hook/useDashboard";
 
 import { Toaster } from "@/components/ui/sonner";
 
 export default function DashboardLayout({ children }) {
+  const { data, loading } = useDashboard();
+
   return (
     // Ensure w-full here
     <div className="flex flex-col min-h-screen w-full ">
       
       {/* 1. TOP NAVBAR - Bahar hai isliye full width hona chahiye */}
       <header className="w-full border-b bg-white dark:bg-[#1a364d] sticky top-0 z-50 shadow-sm">
-        <Navbar />
+        <Navbar user={data.user} isLoading={loading} />
       </header>
 
       {/* 2. MAIN BODY */}

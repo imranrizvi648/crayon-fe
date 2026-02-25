@@ -11,16 +11,21 @@ export const ALL_MENU_ITEMS = [
   { title: "Customers", url: "/customers", icon: Users, roles: ["SALES_USER" ] },
   { title: "Products", url: "/products", icon: Package, roles: ["SALES_USER"] },
   { title: "Workflow", url: "/workflow", icon: GitBranch, roles: ["SALES_USER"]  },
-  { title: "Performance", url: "/performance", icon: TrendingUp, roles: ["SALES_USER"] },
+
 
   // Admin & Super Admin specific
-  { title: "User Management", url: "/users", icon: Users, roles: ["admin"] },
-  { title: "Security", url: "/security", icon: ShieldCheck, roles: ["admin"] },
-  { title: "System Settings", url: "/settings", icon: Settings, roles: ["admin"] },
+  { title: "User Management", url: "/users", icon: Users, roles: ["ADMIN"] },
+  { title: "Security", url: "/security", icon: ShieldCheck, roles: ["ADMIN"] },
+  { title: "System Settings", url: "/settings", icon: Settings, roles: ["ADMIN"] },
+  { title: "Financials", url: "/billing", icon: CreditCard, roles: ["ADMIN"] },
+  { title: "Help Desk", url: "/support", icon: LifeBuoy, roles: ["ADMIN"] },
 
-  // Billing specific
-  { title: "Financials", url: "/billing", icon: CreditCard, roles: ["admin"] },
 
-  // Support specific
-  { title: "Help Desk", url: "/support", icon: LifeBuoy, roles: ["admin"] },
+  // Admin & Super Admin specific
+  { title: "User Management", url: "/users", icon: Users, roles: ["FINANCE_ANALYST"] },
+  { title: "Security", url: "/security", icon: ShieldCheck, roles: ["FINANCE_ANALYST"] },
+  { title: "System Settings", url: "/settings", icon: Settings, roles: ["FINANCE_ANALYST"] },
+  { title: "Financials", url: "/billing", icon: CreditCard, roles: ["FINANCE_ANALYST"] },
+  { title: "Help Desk", url: "/support", icon: LifeBuoy, roles: ["FINANCE_ANALYST"] },
+
 ];

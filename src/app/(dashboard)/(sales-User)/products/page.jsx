@@ -11,7 +11,7 @@ export default function ProductCatalogPage() {
   const { products, loading, fetchProducts } = useProducts();
 
   return (
-    <div className="p-6 space-y-6 bg-slate-50/30 min-h-screen">
+    <div className="px-5 space-y-6 bg-slate-50/30 min-h-screen">
       {/* Page Header */}
       <div className="flex justify-between items-start">
         <div>

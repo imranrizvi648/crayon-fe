@@ -3,18 +3,10 @@
 import { MapPin, Calendar, User, LayoutDashboard } from "lucide-react";
 import { useMemo } from "react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export default function HeroSection({ user }) {
-  /* Fallback user data */
-  const fallbackUser = {
-    name: "Ahmed Hassan",
-    region: "Middle East (UAE)",
-    role: "Senior Sales Representative",
-  };
-
-  const currentUser = user || fallbackUser;
-
-  /* Auto Date calculation using en-GB locale */
+  // Locale-based date calculation
   const today = useMemo(() => {
     return new Date().toLocaleDateString("en-GB", {
       weekday: "long",
@@ -29,51 +21,42 @@ export default function HeroSection({ user }) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-[#1e2d3d] rounded-2xl p-8 mb-8 text-white flex justify-between items-center shadow-xl relative overflow-hidden"
+      // BG ab sidebar/secondary variable se lega (#27455C equivalent)
+      className="bg-secondary rounded-xl p-8 mb-8 text-secondary-foreground flex justify-between items-center shadow-xl relative overflow-hidden border border-white/5"
     >
-      {/* Decorative Background Pattern */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 rounded-full -ml-24 -mb-24 blur-3xl" />
+      {/* Dynamic Background Blurs - Primary color (Scarlet) ka touch diya hai */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24 blur-3xl" />
 
-      {/* Left Side Content */}
       <div className="z-10">
         <motion.h1 
           initial={{ x: -20 }}
           animate={{ x: 0 }}
           className="text-3xl font-bold mb-2 flex items-center gap-2"
         >
-          Welcome back, {currentUser.name}! 👋
+          Welcome back, <span className="text-primary-foreground">{user?.name || "User"}</span>! 
         </motion.h1>
 
-        <p className="text-gray-300 mb-6 text-sm">
+        <p className="text-secondary-foreground/70 mb-6 text-sm font-medium">
           Here's your sales activity overview for today
         </p>
 
-        <div className="flex flex-wrap gap-6 text-sm text-gray-300">
-          <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
-            <MapPin size={16} className="text-blue-400" />
-            <span>Region: {currentUser.region}</span>
-          </div>
-
-          <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
-            <Calendar size={16} className="text-blue-400" />
-            <span>{today}</span>
-          </div>
-
-          <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
-            <User size={16} className="text-blue-400" />
-            <span>{currentUser.role}</span>
-          </div>
+        <div className="flex flex-wrap gap-4 text-sm">
+          {/* Badge Style Info Chips */}
+          {[
+            { icon: MapPin, text: `Region: ${user?.region || "N/A"}` },
+            { icon: Calendar, text: today },
+            { icon: User, text: `Role: ${user?.role || "Team Member"}` }
+          ].map((item, idx) => (
+            <div key={idx} className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10 hover:bg-white/15 transition-colors">
+              <item.icon size={16} className="text-primary" /> {/* Primary Red Icon */}
+              <span className="capitalize font-medium text-secondary-foreground/90">{item.text}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Right Decorative Icon */}
-      <motion.div 
-        whileHover={{ rotate: 5, scale: 1.05 }}
-        className="hidden md:block bg-white/10 p-6 rounded-full border border-white/5 backdrop-blur-sm shadow-2xl"
-      >
-        <LayoutDashboard size={48} className="text-white opacity-80" />
-      </motion.div>
+   
     </motion.div>
   );
 }

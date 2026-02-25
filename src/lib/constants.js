@@ -19,6 +19,8 @@ export const ENDPOINTS = {
   },
 
 
+ 
+
   // --- DASHBOARD ---
   DASHBOARD: {
  DASHBOARD_SUMMARY: `${API_BASE_URL}dashboard/summary`,
@@ -34,7 +36,7 @@ export const ENDPOINTS = {
   COSTING_SHEETS: {
     CREATE: `${API_BASE_URL}costing-sheets`,
     LIST: `${API_BASE_URL}costing-sheets`,
-     GET_BY_ID: (id) => `${API_BASE_URL}costing-sheets/${id}`,
+    GET_BY_ID: (id) => `${API_BASE_URL}costing-sheets/${id}`,
     UPDATE: (id) => `${API_BASE_URL}costing-sheets/${id}`,
     DELETE: (id) => `${API_BASE_URL}costing-sheets/${id}`,
   
@@ -44,6 +46,8 @@ export const ENDPOINTS = {
 
   CUSTOMER: {
     LIST: `${API_BASE_URL}customers`,
+
+   LIST_WITH_FILTER: "/customers",
   },
 
 

@@ -23,30 +23,39 @@ export function proxy(request) {
 
       const userRole = payload?.roles?.[0]?.toUpperCase();
       const exp = payload?.exp;
-
       const now = Math.floor(Date.now() / 1000);
 
       // 3️⃣ Expired Token Check
       if (!exp || exp < now) {
-        console.warn("[AUTH] Token expired");
-
-        const response = NextResponse.redirect(
-          new URL("/login", request.url)
-        );
-
+        const response = NextResponse.redirect(new URL("/login", request.url));
         response.cookies.delete("access_token");
         return response;
       }
 
-      // 4️⃣ Roles Configuration
+      // 🌟 NEW: Root Path (/) Instant Redirection Logic
+      // Ye logic root page ke client-side redirect se hazar guna fast hai
+      if (pathname === "/") {
+        const roleRoutes = {
+          ADMIN: "/dashboard/analytics",
+          SALES_MANAGER: "/dashboard",
+          SALES_USER: "/dashboard",
+          FINANCE_ANALYST: "/finance",
+          OPERATIONS_MANAGER: "/operations",
+          SALES_LEAD: "/leads",
+          EXECUTIVE: "/executive-summary"
+        };
+
+        const targetPath = roleRoutes[userRole] || "/dashboard/profile";
+        return NextResponse.redirect(new URL(targetPath, request.url));
+      }
+
+      // 4️⃣ Roles Permissions (Baqi pages ki security ke liye)
       const ROLE_PERMISSIONS = {
         ADMIN: ["/"],
-        SALES_MANAGER: ["/", "/dashboard", "/sheets", "/sign", "/customers"],
+        SALES_MANAGER: ["/", "/dashboard", "/team-sheets", "/approval-que", "/report-and-analytic", "/user-management"],
         SALES_USER: ["/", "/sheets", "/dashboard", "/customers", "/products", "/workflow"],
-        FINANCE: ["/", "/finance", "/reports", "/payments"],
-        PRODUCTION: ["/", "/workflow", "/inventory", "/orders"],
-        PROCUREMENT: ["/", "/vendors", "/purchase-orders"],
-        HR: ["/", "/employees", "/attendance", "/payroll"],
+        FINANCE_ANALYST: ["/", "/finance"],
+        // Baqi roles ke allowed paths yahan add karein
       };
 
       const allowedPaths = ROLE_PERMISSIONS[userRole] || [];
@@ -58,26 +67,14 @@ export function proxy(request) {
 
       // 6️⃣ Role-based access check
       const isAllowed = allowedPaths.some(
-        (path) =>
-          pathname === path || pathname.startsWith(`${path}/`)
+        (path) => pathname === path || pathname.startsWith(`${path}/`)
       );
 
       if (!isAllowed) {
-        console.warn(
-          `[SECURITY] Access Denied: Role [${userRole}] tried to access [${pathname}]`
-        );
-
-        return NextResponse.redirect(
-          new URL("/unauthorized", request.url)
-        );
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
       }
     } catch (error) {
-      console.error("[AUTH] Invalid token", error);
-
-      const response = NextResponse.redirect(
-        new URL("/login", request.url)
-      );
-
+      const response = NextResponse.redirect(new URL("/login", request.url));
       response.cookies.delete("access_token");
       return response;
     }
@@ -87,5 +84,7 @@ export function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!login|api|_next/static|_next/image|favicon.ico|logo.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

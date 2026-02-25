@@ -1,26 +1,22 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Link from "next/link"; // Link import kiya gaya hai
 import { useCostingSheets } from "./hooks/useCostingSheets";
-import { TemplateModal } from "./components/TemplateModal";
-import { SheetCreationWizard } from "./components/SheetCreationWizard";
 import { SheetTable } from "./components/SheetTable";
 import { EditSheetModal } from "./components/EditSheetModal";
-import { SheetPreviewModal } from "./components/SheetPreviewModal"; // New Import
+import { SheetPreviewModal } from "./components/SheetPreviewModal";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Plus, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
 
 export default function CostingSheetsList() {
-  // 1. fetchSheetDetail ko destructure kiya hook se
-  const { data, loading, fetchSheets, createSheet, deleteSheet, updateSheet, fetchSheetDetail } = useCostingSheets();
+  const { data, loading, fetchSheets, deleteSheet, updateSheet, fetchSheetDetail } = useCostingSheets();
   
-  // UI States
-  const [showTemplateModal, setShowTemplateModal] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [showWizard, setShowWizard] = useState(false);
-  
-  // Preview States (Naya logic yahan hai)
+  // --- UI STATES ---
+  // Wizard aur Template ki states yahan se hta di gayi hain
+
+  // Preview States
   const [showPreview, setShowPreview] = useState(false);
   const [previewSheet, setPreviewSheet] = useState(null);
 
@@ -42,7 +38,6 @@ export default function CostingSheetsList() {
 
   // --- HANDLERS ---
 
-  // Preview handle karne ka function
   const handlePreviewClick = async (id) => {
     const res = await fetchSheetDetail(id);
     if (res.success) {
@@ -89,67 +84,81 @@ export default function CostingSheetsList() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-slate-50 min-h-screen text-black">
+    <div className="px-5 space-y-8 min-h-screen">
       {/* Header Section */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-[#1a3556]">Costing Dashboard</h1>
-          <p className="text-sm text-slate-500 font-medium">Manage FEWA and MCC estimates</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-4">
+          <div className="bg-secondary p-3 rounded-2xl shadow-lg shadow-secondary/20">
+            <LayoutDashboard className="text-white" size={23} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-secondary">
+              Costing <span className="">Dashboard</span>
+            </h1>
+            <p className="text-sm text-muted-foreground font-medium italic">
+              Manage FEWA and MCC estimates with precision
+            </p>
+          </div>
         </div>
-        <Button 
-          onClick={() => setShowTemplateModal(true)} 
-          className="bg-[#dc1e25] hover:bg-[#b0181e] text-white shadow-lg px-6 font-bold"
-        >
-          + New Sheet
-        </Button>
+        
+        {/* Navigation to Create Page */}
+        <Link href="/sheets/create-sheet">
+          <Button 
+            className="bg-primary hover:bg-primary/90 text-white rounded-lg shadow-primary/20 px-8 py-5 pr-13 font-bold tracking-wider cursor-pointer"
+          >
+            <Plus size={20} className="mr-2" /> New Sheet
+          </Button>
+        </Link>
       </div>
 
       {/* Filters Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 bg-white p-3 rounded-xl shadow-sm border border-slate-200">
-        <Select value={filters.template_type} onValueChange={(v) => handleFilterChange("template_type", v)}>
-          <SelectTrigger className="h-10 text-sm border-slate-200">
-            <SelectValue placeholder="Template Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Templates</SelectItem>
-            <SelectItem value="FEWA">FEWA</SelectItem>
-            <SelectItem value="MCC">MCC</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex flex-wrap items-center gap-4 bg-card p-4 rounded-lg shadow-sm border border-border">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+          <Select value={filters.template_type} onValueChange={(v) => handleFilterChange("template_type", v)}>
+            <SelectTrigger className="h-11 border-border bg-muted/30 font-semibold text-secondary focus:ring-primary/20">
+              <SelectValue placeholder="Template Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Templates</SelectItem>
+              <SelectItem value="FEWA">FEWA</SelectItem>
+              <SelectItem value="MCC">MCC</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Select value={filters.status} onValueChange={(v) => handleFilterChange("status", v)}>
-          <SelectTrigger className="h-10 text-sm border-slate-200">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="DRAFT">Draft</SelectItem>
-            <SelectItem value="APPROVED">Approved</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select value={filters.status} onValueChange={(v) => handleFilterChange("status", v)}>
+            <SelectTrigger className="h-11 border-border bg-muted/30 font-semibold text-secondary focus:ring-primary/20">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="DRAFT">Draft</SelectItem>
+              <SelectItem value="APPROVED">Approved</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Select value={filters.sales_region} onValueChange={(v) => handleFilterChange("sales_region", v)}>
-          <SelectTrigger className="h-10 text-sm border-slate-200">
-            <SelectValue placeholder="Region" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Regions</SelectItem>
-            <SelectItem value="UAE">UAE</SelectItem>
-            <SelectItem value="KSA">KSA</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select value={filters.sales_region} onValueChange={(v) => handleFilterChange("sales_region", v)}>
+            <SelectTrigger className="h-11 border-border bg-muted/30 font-semibold text-secondary focus:ring-primary/20">
+              <SelectValue placeholder="Region" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Regions</SelectItem>
+              <SelectItem value="UAE">UAE</SelectItem>
+              <SelectItem value="KSA">KSA</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         <Button 
           variant="outline" 
           onClick={resetFilters} 
-          className="text-slate-500 border-slate-200 hover:bg-slate-50 gap-2 font-semibold"
+          className="h-11 px-6 text-secondary border-secondary/20 hover:bg-secondary hover:text-white gap-2 font-bold transition-colors"
         >
-          <RotateCcw size={14} /> Reset Filters
+          <RotateCcw size={16} /> Reset
         </Button>
       </div>
 
-      {/* Main Table Card */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      {/* Main Table Container */}
+      <div className="bg-card rounded-2xl shadow-xl shadow-secondary/5 border border-border overflow-hidden">
         <SheetTable 
           items={data.items} 
           loading={loading} 
@@ -157,13 +166,12 @@ export default function CostingSheetsList() {
           onPageChange={handlePageChange} 
           onDelete={deleteSheet}
           onEdit={handleEditClick} 
-          onPreview={handlePreviewClick} // Preview prop yahan pass kiya
+          onPreview={handlePreviewClick}
         />
       </div>
 
-      {/* --- ALL MODALS --- */}
+      {/* --- MODALS --- */}
 
-      {/* Preview Modal */}
       <SheetPreviewModal 
         isOpen={showPreview} 
         onClose={() => setShowPreview(false)} 
@@ -177,24 +185,6 @@ export default function CostingSheetsList() {
         setFormData={setEditFormData}
         onSave={handleUpdateSave}
       />
-
-      <TemplateModal 
-        isOpen={showTemplateModal} 
-        onClose={() => setShowTemplateModal(false)} 
-        onSelect={(id) => { setSelectedTemplate(id); setShowTemplateModal(false); setShowWizard(true); }} 
-      />
-
-      {showWizard && (
-        <SheetCreationWizard 
-          isOpen={showWizard} 
-          onClose={() => { setShowWizard(false); setSelectedTemplate(null); }} 
-          template={selectedTemplate}
-          onSubmit={async (p) => {
-            const res = await createSheet(p);
-            if (res.success) setShowWizard(false);
-          }}
-        />
-      )}
     </div>
   );
 }

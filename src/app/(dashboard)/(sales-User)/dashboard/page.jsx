@@ -3,35 +3,26 @@
 import { useDashboard } from "./hook/useDashboard";
 import HeroSection from "./components/HeroSection";
 import StatsGrid from "./components/StatsGrid";
-import QuickActions from "./components/QuickActions";
+import StatusAnalytics from "./components/StatusAnalytics";
 import RecentSheets from "./components/RecentSheets";
 import ActivityFeed from "./components/ActivityFeed";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
-  // Destructure all necessary values from the hook
-  const { data, loading, sheetsLoading, error, fetchSheets, refresh } = useDashboard();
+  const { data, loading, sheetsLoading, error, refresh, fetchSheets } = useDashboard();
 
-  if (loading) {
-    return (
-      <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-        <Skeleton className="h-[200px] w-full rounded-2xl" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-[120px] rounded-xl" />)}
-        </div>
-        <Skeleton className="h-[100px] w-full rounded-xl" />
-      </div>
-    );
-  }
-
+  // Error State: Ab ye theme variables use karega
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50">
-        <div className="bg-white p-8 rounded-2xl shadow-sm text-center border border-red-100">
-          <p className="text-red-500 font-bold mb-4">❌ API Error: {error}</p>
-          <Button onClick={refresh} variant="outline" className="border-red-200 text-red-600 hover:bg-red-50">
-            Try Again
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background text-foreground">
+        <div className="bg-card p-8 rounded-2xl shadow-sm text-center border border-border">
+          <p className="text-destructive font-bold mb-4 text-lg">❌ Connection Error</p>
+          <p className="text-muted-foreground mb-6 text-sm">{error}</p>
+          <Button 
+            onClick={refresh} 
+            className="bg-primary hover:opacity-90 text-primary-foreground px-8 font-bold transition-all"
+          >
+            Retry Connection
           </Button>
         </div>
       </div>
@@ -39,23 +30,31 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/50 px-6 space-y-8 pb-10">
-      <HeroSection user={data.user} />
+    // bg-background aur text-foreground use karne se Light/Dark toggle automatically kaam karega
+    <div className="min-h-screen  px-5 space-y-8 pb-10 text-foreground transition-colors duration-300">
+      
+      {/* HeroSection: Isme data.user pass ho raha hai */}
+      <HeroSection user={data.user} isLoading={loading} />
 
-      <StatsGrid stats={data.stats} />
+      {/* StatsGrid: Dashboard stats */}
+      <StatsGrid stats={data.stats} isLoading={loading} />
 
-      <QuickActions role={data.user?.role} />
+      {/* Analytics Section */}
+      <StatusAnalytics breakdown={data.stats.breakdown} isLoading={loading} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Pass pagination props and fetch function correctly */}
-     
-<RecentSheets 
-  sheets={data.sheets} 
-  pagination={data.pagination} 
-  onPageChange={fetchSheets} // Ye pass karna lazmi hai
-  isLoading={sheetsLoading} 
-/>
-        <ActivityFeed activities={data.activities} />
+        <div className="lg:col-span-2">
+          {/* Recent Sheets: Tables/Cards automatically border-border use karenge */}
+          <RecentSheets 
+            sheets={data.sheets} 
+            pagination={data.pagination} 
+            isLoading={loading || sheetsLoading} 
+            onPageChange={fetchSheets} 
+          />
+        </div>
+        
+        {/* Activity Feed: Isko sidebar color ya card color mil sakta hai logic ke mutabiq */}
+        <ActivityFeed activities={data.activities} isLoading={loading} />
       </div>
     </div>
   );

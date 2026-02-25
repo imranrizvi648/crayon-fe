@@ -10,8 +10,10 @@ api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('access_token');
+      
       // Login/Register ke ilawa baki requests mein token lagao
-      if (token && !config.url.includes('/auth/login')) {
+      // FIXED: config.url && check lagaya hai taake runtime error na aaye
+      if (token && config.url && !config.url.includes('/auth/login')) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
@@ -20,27 +22,22 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('refresh_token');
-      if (refreshToken) {
-        try {
-          const res = await axios.post(ENDPOINTS.AUTH.REFRESH, { refresh_token: refreshToken });
-          localStorage.setItem('access_token', res.data.access_token);
-          originalRequest.headers.Authorization = `Bearer ${res.data.access_token}`;
-          return axios(originalRequest);
-        } catch (err) {
-          localStorage.clear();
-          window.location.href = '/login';
-        }
+api.interceptors.request.use(
+  (config) => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      
+      // SAFETY CHECK: Pehle confirm karein ke url majood hai aur string hai
+      const urlPath = config.url ? String(config.url) : ""; 
+      const isAuthRequest = urlPath.includes('/auth/login') || urlPath.includes('/auth/refresh');
+
+      if (token && urlPath && !isAuthRequest) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
     }
-    return Promise.reject(error);
-  }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 export default api;

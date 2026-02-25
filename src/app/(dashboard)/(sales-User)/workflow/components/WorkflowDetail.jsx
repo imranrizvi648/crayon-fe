@@ -3,11 +3,18 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Clock, Calendar, User, MessageSquare, ShieldCheck } from "lucide-react";
 
 export default function WorkflowDetail({ workflowData, selectedSheetInfo, isLoading }) {
+  // 1. Loading state ko poore component par apply karein
   if (isLoading) {
-    return <div className="flex-1 flex items-center justify-center text-gray-400">Loading...</div>;
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-2xl border shadow-sm h-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+        <p className="text-sm font-medium text-slate-500 italic">Syncing workflow details...</p>
+      </div>
+    );
   }
 
-  if (!workflowData) {
+  // 2. Data check
+  if (!workflowData || !selectedSheetInfo) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-2 bg-white rounded-2xl border">
         <div className="p-4 bg-gray-50 rounded-full">📁</div>
@@ -16,11 +23,11 @@ export default function WorkflowDetail({ workflowData, selectedSheetInfo, isLoad
     );
   }
 
+  // Baki poora UI yahan se shuru hoga...
   return (
     <div className="flex-1 bg-white rounded-2xl border shadow-sm p-6 overflow-y-auto custom-scrollbar">
-      {/* Compact Header */}
-      <div className="flex justify-between items-end border-b pb-4 mb-6 text-black">
-        <div>
+       {/* Ab header aur data saath mein load honge */}
+       <div className="flex justify-between items-end border-b pb-4 mb-6 text-black"> <div>
           <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">{selectedSheetInfo?.sheet_number}</h1>
           <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{selectedSheetInfo?.customer_name}</p>
         </div>

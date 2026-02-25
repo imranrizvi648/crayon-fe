@@ -54,17 +54,18 @@ export const useCostingSheets = () => {
       setLoading(false);
     }
   }, []);
-// 2. CREATE SHEET (Clean & Production Ready)
+// 2. CREATE SHEET (Enhanced Error Handling for Backend Debugging)
 const createSheet = async (payload) => {
   try {
-    // API Call
+    // Console mein payload check karne ke liye (Optional debug line)
+    console.log("🚀 Sending Payload to Backend:", payload);
+
     const res = await api.post(ENDPOINTS.COSTING_SHEETS.CREATE, payload, {
       timeout: 15000,
     });
 
-    // Success Handling
     if (res.status === 200 || res.status === 201) {
-      await fetchSheets(1); // Refresh list
+      await fetchSheets(1);
       toast.success("Costing sheet created successfully!");
       return { success: true, data: res.data };
     }
@@ -72,56 +73,57 @@ const createSheet = async (payload) => {
     throw new Error(`Unexpected status code: ${res.status}`);
 
   } catch (err) {
-    let userFriendlyMessage = "Failed to create costing sheet. Please try again.";
+    let userFriendlyMessage = "Failed to create costing sheet.";
     let devDetails = {};
 
+    // --- BACKEND ERROR CONSOLE LOGGING ---
+    console.group("❌ BACKEND ERROR DETAILS"); // Grouping logs for clean view
+
     if (err.response) {
-      // Server responded with an error (4xx, 5xx)
+      // Server responded with 4xx or 5xx
       const { status, data } = err.response;
+      
+      console.error(`Status Code: ${status}`);
+      console.error("Raw Backend Data:", data);
+      
+      // Agar backend Request ID bhej raha hai (debugging ke liye best hai)
+      if (data?.request_id) console.warn(`Request ID: ${data.request_id}`);
 
+      // Validation Errors Parsing
+      const errors = data?.errors || data?.error?.details || data?.validationErrors || data?.details || {};
+      
       if (status === 422 || status === 400) {
-        // Validation errors parse karna
-        const errors = data?.errors || data?.error?.details || data?.validationErrors || {};
-
-        if (Object.keys(errors).length > 0) {
-          userFriendlyMessage = "Validation failed: ";
-          userFriendlyMessage += Object.values(errors)
-            .flat()
-            .slice(0, 3)
-            .join("; ") + (Object.keys(errors).length > 3 ? " + more..." : "");
-        } else if (data?.message) {
-          userFriendlyMessage = data.message;
-        } else if (data?.detail) {
-          userFriendlyMessage = data.detail;
+        console.table(errors); // Table format mein errors dikhayega
+        userFriendlyMessage = "Validation failed: Check console for field details.";
+        
+        // Detailed message construction
+        if (Array.isArray(errors)) {
+           userFriendlyMessage = errors.map(e => `${e.field}: ${e.message}`).join("; ");
+        } else if (Object.keys(errors).length > 0) {
+           userFriendlyMessage = Object.values(errors).flat().slice(0, 3).join("; ");
         }
-      } else if (status === 401 || status === 403) {
-        userFriendlyMessage = "Authentication issue. Please login again.";
       } else if (status >= 500) {
-        userFriendlyMessage = "Server error occurred. Please try again later.";
-      } else {
-        userFriendlyMessage = `Error ${status}: Something went wrong.`;
+        userFriendlyMessage = "Server-side crash (500). Backend logs check karein.";
       }
 
-      devDetails = {
-        status,
-        data: data || "No data",
-        validationErrors: data?.errors || "No detailed errors",
-      };
+      devDetails = { status, data, errors };
 
     } else if (err.request) {
-      // Network issues (No response)
-      userFriendlyMessage = "Cannot reach server. Check your internet connection.";
+      // Network issues / CORS
+      console.error("No response received. Possible CORS issue or Server is down.");
+      console.error("Request Object:", err.request);
+      userFriendlyMessage = "Network/CORS error. Server tak request nahi pohnchi.";
       devDetails = { type: "network_error" };
     } else {
-      // Setup error
-      userFriendlyMessage = "Error while preparing the request.";
+      console.error("Request Setup Error:", err.message);
+      userFriendlyMessage = "Request prepare karne mein masla hua.";
       devDetails = { type: "setup_error", message: err.message };
     }
 
-    // Final user feedback (Sirf Toast dikhayein, Console silent rakhein)
-    toast.error(userFriendlyMessage, {
-      duration: 6000,
-    });
+    console.groupEnd(); // End grouping
+    // -------------------------------------
+
+    toast.error(userFriendlyMessage, { duration: 6000 });
 
     return {
       success: false,
@@ -130,7 +132,6 @@ const createSheet = async (payload) => {
     };
   }
 };
-
   // 3. UPDATE SHEET
   const updateSheet = async (id, updateData) => {
     try {
@@ -180,6 +181,39 @@ const createSheet = async (payload) => {
     }
   }, []);
 
+  // useCostingSheets hook ke andar ye function add karein
+// useCostingSheets.js
+const searchCustomers = async (searchQuery) => {
+  try {
+    // Debugging ke liye log karein
+    console.log("🔍 API URL:", ENDPOINTS.CUSTOMER.LIST_WITH_FILTER);
+
+    // Hamesha ensure karein ke URL string hai
+    const res = await api.get(String(ENDPOINTS.CUSTOMER.LIST_WITH_FILTER), {
+      params: { search: searchQuery } 
+    });
+    
+    return res.data.items || []; 
+  } catch (err) {
+    console.error("❌ SEARCH ERROR DETAILS:", err);
+    return [];
+  }
+};
+
+// useCostingSheets.js mein return se pehle add karein
+const searchProducts = async (searchQuery) => {
+  try {
+    const res = await api.get(ENDPOINTS.PRODUCT.LIST, {
+      params: { search: searchQuery } 
+    });
+    // Backend structure ke mutabiq res.data.items ya direct array
+    return res.data.items || res.data || []; 
+  } catch (err) {
+    console.error("❌ PRODUCT SEARCH ERROR:", err);
+    return [];
+  }
+};
+
   return { 
     data, 
     loading, 
@@ -187,6 +221,8 @@ const createSheet = async (payload) => {
     createSheet, 
     updateSheet, 
     deleteSheet,
-    fetchSheetDetail
+    fetchSheetDetail,
+    searchCustomers,
+    searchProducts
   };
 };

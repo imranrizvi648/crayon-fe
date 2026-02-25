@@ -1,11 +1,39 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
+import api from "@/lib/axios"; 
+import { ENDPOINTS } from '@/lib/constants';
+
+// --- LOGOUT THUNK ---
+export const logoutUser = createAsyncThunk(
+  'auth/logoutUser',
+  async (_, { dispatch }) => {
+    try {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        // Backend notification
+        await api.post(ENDPOINTS.AUTH.LOGOUT, { token: refreshToken });
+      }
+    } catch (error) {
+      console.error("Logout API failed:", error);
+    } finally {
+      // Cleanup
+      localStorage.clear();
+      document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+      // ✅ Use the logout action
+      dispatch(logout());
+
+      window.location.href = '/login';
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: { 
     user: null, 
-    token: null, // 1. Initial state mein token add karein
+    token: null, 
     isAuthenticated: false, 
     loading: false 
   },
@@ -15,26 +43,23 @@ const authSlice = createSlice({
       if (token) {
         try {
           const decoded = jwtDecode(token); 
-          state.token = token; // 2. Token ko state mein save karein
+          state.token = token;
           state.user = decoded; 
           state.isAuthenticated = true;
         } catch (error) {
-          console.error("Invalid Token", error);
           state.isAuthenticated = false;
-          state.user = null;
-          state.token = null;
         }
       }
     },
+    // ✅ Naam wapis 'logout' rakh diya taaki useAuth crash na ho
     logout: (state) => {
       state.user = null;
-      state.token = null; // 3. Logout pe token clear karein
+      state.token = null;
       state.isAuthenticated = false;
-      // Note: localStorage aur Cookies useAuth hook handle kar raha hai, 
-      // yahan sirf state reset kafi hai.
     },
   },
 });
 
+// ✅ Exporting 'logout' properly
 export const { setUserFromToken, logout } = authSlice.actions;
 export default authSlice.reducer;

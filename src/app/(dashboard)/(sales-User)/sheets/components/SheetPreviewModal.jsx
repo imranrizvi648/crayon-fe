@@ -1,147 +1,126 @@
 "use client";
 
+import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
-  FileText, Globe, Landmark, Percent, Calculator, 
+  FileText, Globe, Percent, Calculator, 
   Briefcase, Calendar, User, ShieldCheck, Info, Layers
 } from "lucide-react";
 
 export function SheetPreviewModal({ isOpen, onClose, sheet }) {
   if (!sheet) return null;
 
-  const fmt = (val) => new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(val || 0);
+  const fmt = (val) => 
+    new Intl.NumberFormat('en-US', { 
+      minimumFractionDigits: 2, 
+      maximumFractionDigits: 2 
+    }).format(val || 0);
+
+  const fmtPct = (val) => `${((val || 0) * 100).toFixed(1)}%`;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      {/* FIX: 'max-h-[95vh]' ensure karta hai ke modal screen se bada na ho.
-         'flex flex-col' header aur footer ko fix rakhega aur beech wala area scroll karega.
-      */}
-      <DialogContent className="max-w-[1450px] min-w-[1100px] w-[95vw] max-h-[95vh] flex flex-col p-0 overflow-hidden text-black">
+      <DialogContent className="max-w-[1450px] min-w-[1100px] w-[95vw] max-h-[95vh] flex flex-col p-0 overflow-hidden bg-background text-foreground border-none shadow-2xl">
         
-        {/* Header - Fixed (Scroll nahi hoga) */}
-        <DialogHeader className="p-6 border-b bg-slate-50 flex-shrink-0">
+        {/* --- Header: Fixed --- */}
+        <DialogHeader className="p-6 border-b bg-muted/20 flex-shrink-0">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
               <div className="flex items-center gap-3">
-                <div className="bg-[#1a3556] p-2 rounded-lg text-white">
+                {/* Branding Icon remains Primary */}
+                <div className="bg-primary p-2.5 rounded-xl text-primary-foreground shadow-sm">
                   <FileText size={24} />
                 </div>
                 <div>
-                  <DialogTitle className="text-2xl font-bold text-[#1a3556]">
-                    {sheet.sheet_number}
-                  </DialogTitle>
-                  <div className="flex gap-2 mt-1">
-                    <Badge className="bg-blue-100 text-blue-700 uppercase font-black text-[10px]">
+                  <div className="flex items-center gap-3">
+                    <DialogTitle className="text-2xl font-bold text-secondary tracking-tight">
+                      {sheet.sheet_number}
+                    </DialogTitle>
+                    <Badge variant="outline" className="uppercase font-bold text-[10px] border-secondary/30 text-secondary">
                       {sheet.status}
                     </Badge>
-                    <Badge variant="outline" className="text-[10px] font-bold border-slate-300">
-                      Version {sheet.version}
-                    </Badge>
                   </div>
+                  <p className="text-secondary font-medium mt-1 text-sm flex items-center gap-2">
+                    <span className="font-bold">{sheet.customer?.name}</span>
+                    <span className="opacity-30">|</span>
+                    <span className="italic">{sheet.opportunity_name}</span>
+                  </p>
                 </div>
               </div>
-              <p className="text-slate-500 font-medium ml-12 text-sm italic">
-                {sheet.customer?.name} — {sheet.opportunity_name}
-              </p>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-tighter">Grand Total (Inc. VAT)</p>
-              <p className="text-3xl font-black text-[#dc1e25]">
-                {sheet.currency_code} {fmt(sheet.summary?.grand_total_with_vat)}
+
+            {/* Accent color for the most important number */}
+            <div className="text-right bg-background p-3 px-5 mr-10 rounded-2xl border border-border shadow-sm">
+              <p className="text-[10px] text-secondary font-bold uppercase tracking-widest mb-1">Grand Total (Inc. VAT)</p>
+              <p className="text-2xl font-bold text-secondary flex items-center justify-end gap-2">
+                <span className="text-sm font-bold text-secondary">{sheet.currency_code}</span>
+                {fmt(sheet.summary?.grand_total_with_vat)}
               </p>
             </div>
           </div>
         </DialogHeader>
 
-        {/* MAIN SCROLLABLE AREA 
-           'flex-1' space fill karega aur 'overflow-y-auto' scroll enable karega
-        */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar bg-white">
+        {/* --- Main Content --- */}
+        <div className="flex-1 overflow-y-auto bg-background scroll-smooth custom-scrollbar">
           <div className="p-8 space-y-10">
             
-            {/* 1. Metadata Grid */}
+            {/* 1. Metadata Grid (Headings switched to Secondary) */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Entity Info */}
-              <div className="p-4 border rounded-xl bg-slate-50/50 space-y-3">
-                <h3 className="font-bold text-[11px] text-[#1a3556] flex items-center gap-2 border-b pb-2 uppercase tracking-wider">
-                  <Globe size={14} /> Entity & Sales
-                </h3>
-                <div className="space-y-2 text-[11px]">
-                  <div className="flex justify-between text-slate-500">Segment: <span className="font-bold text-black">{sheet.customer_segment}</span></div>
-                  <div className="flex justify-between text-slate-500">Region: <span className="font-bold text-black">{sheet.sales_region}</span></div>
-                  <div className="flex justify-between text-slate-500">Deal: <span className="font-bold text-black">{sheet.deal_type}</span></div>
-                </div>
-              </div>
-
-              {/* Agreement Specs */}
-              <div className="p-4 border rounded-xl bg-slate-50/50 space-y-3">
-                <h3 className="font-bold text-[11px] text-[#1a3556] flex items-center gap-2 border-b pb-2 uppercase tracking-wider">
-                  <Briefcase size={14} /> Agreement Specs
-                </h3>
-                <div className="space-y-2 text-[11px]">
-                  <div className="flex justify-between text-slate-500">Type: <span className="font-bold text-black truncate max-w-[80px]">{sheet.agreement_type}</span></div>
-                  <div className="flex justify-between text-slate-500">Category: <span className="font-bold text-blue-600">{sheet.new_or_renewal}</span></div>
-                  <div className="flex justify-between text-slate-500">Levels: <span className="font-bold text-black">{sheet.agreement_level_system}/{sheet.agreement_level_server}</span></div>
-                </div>
-              </div>
-
-              {/* GP & Markups */}
-              <div className="p-4 border rounded-xl bg-slate-50/50 space-y-3">
-                <h3 className="font-bold text-[11px] text-[#1a3556] flex items-center gap-2 border-b pb-2 uppercase tracking-wider">
-                  <Percent size={14} /> GP & Markups
-                </h3>
-                <div className="space-y-2 text-[11px]">
-                  <div className="flex justify-between text-slate-500">GP Split: <span className="font-bold text-black">{sheet.gp_split_model}</span></div>
-                  <div className="flex justify-between text-slate-500">Crayon GP: <span className="font-bold text-black">{sheet.crayon_gp_percentage}%</span></div>
-                  <div className="flex justify-between text-slate-500">VAT: <span className="font-bold text-black">{(sheet.vat_rate * 100)}%</span></div>
-                </div>
-              </div>
-
-              {/* Bonds & Costs */}
-              <div className="p-4 border rounded-xl bg-slate-50/50 space-y-3">
-                <h3 className="font-bold text-[11px] text-[#1a3556] flex items-center gap-2 border-b pb-2 uppercase tracking-wider">
-                  <Layers size={14} /> Bonds & Costs
-                </h3>
-                <div className="space-y-2 text-[11px]">
-                  <div className="flex justify-between text-slate-500">Bid Bond: <span className="font-bold text-black">{sheet.bid_bond_percentage}%</span></div>
-                  <div className="flex justify-between text-slate-500">Perf Bond: <span className="font-bold text-black">{sheet.performance_bond_percentage}%</span></div>
-                  <div className="flex justify-between text-slate-500 text-red-500">Tender: <span className="font-bold">{fmt(sheet.tender_cost)}</span></div>
-                </div>
-              </div>
+              {[
+                { label: 'Entity & Sales', icon: Globe, items: [['Segment', 'customer_segment'], ['Region', 'sales_region'], ['Deal Type', 'deal_type']] },
+                { label: 'Agreement Specs', icon: Briefcase, items: [['Type', 'agreement_type'], ['Category', 'new_or_renewal'], ['Lvl', 'agreement_level_system']] },
+                { label: 'GP & Markups', icon: Percent, items: [['GP Model', 'gp_split_model'], ['Crayon GP', `${sheet.crayon_gp_percentage}%`], ['VAT Rate', fmtPct(sheet.vat_rate)]] },
+                { label: 'Bonds & Costs', icon: Layers, items: [['Bid Bond', `${sheet.bid_bond_percentage}%`], ['Perf Bond', `${sheet.performance_bond_percentage}%`], ['Tender Cost', fmt(sheet.tender_cost), true]] }
+              ].map((section, idx) => (
+                <section key={idx} className="p-4 border border-border rounded-xl bg-muted/5 space-y-3 hover:border-secondary/40 transition-colors">
+                  <h3 className="font-bold text-[11px] text-secondary flex items-center gap-2 border-b border-border pb-2 uppercase tracking-wider">
+                    <section.icon size={14} className="opacity-70" /> {section.label}
+                  </h3>
+                  <div className="space-y-2.5 text-[11px]">
+                    {section.items.map(([lbl, val, isCritical], i) => (
+                      <div key={i} className="flex justify-between items-center">
+                        <span className="text-muted-foreground">{lbl}</span>
+                        <span className={`font-bold ${isCritical ? 'text-accent' : 'text-foreground'}`}>
+                          {sheet[val] || val}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
             </div>
 
-            {/* 2. CIF Section */}
+            {/* 2. CIF Section (Subtle Style) */}
             <div className="space-y-4">
-              <h3 className="font-bold text-sm text-[#1a3556] flex items-center gap-2 tracking-widest uppercase">
-                <ShieldCheck size={16} className="text-blue-500" /> CIF Input Values ({sheet.currency_code})
+              <h3 className="font-black text-xs text-secondary tracking-widest uppercase flex items-center gap-2">
+                <ShieldCheck size={16} className="text-secondary/60" /> CIF Input Values
               </h3>
               <div className="grid grid-cols-4 gap-4">
                 {['m365_e5', 'm365_e3', 'azure', 'dynamics_365'].map(key => (
-                  <div key={key} className="p-3 border rounded-lg flex justify-between items-center shadow-sm bg-slate-50/30">
-                    <span className="text-[10px] text-slate-400 font-bold uppercase">{key.replace('_', ' ')}</span>
-                    <span className="text-xs font-black text-slate-700">{fmt(sheet[`cif_${key}_value`])}</span>
+                  <div key={key} className="p-4 border border-border rounded-xl flex justify-between items-center bg-muted/10">
+                    <span className="text-[10px] text-secondary font-black uppercase">{key.replace('_', ' ')}</span>
+                    <span className="text-sm font-black text-primary">{fmt(sheet[`cif_${key}_value`])}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* 3. Detailed Financial Summary */}
+            {/* 3. Financial Summary Table (Soft Header) */}
             <div className="space-y-4">
-              <h3 className="font-bold text-lg text-[#1a3556] flex items-center gap-2 uppercase tracking-tight">
-                <Calculator size={20} className="text-blue-500" /> 3-Year Financial Summary Breakdown
+              <h3 className="font-black text-lg text-secondary flex items-center gap-2 uppercase tracking-tight">
+                <Calculator size={22} className="text-secondary/50" /> 3-Year Financial Summary
               </h3>
-              <div className="border rounded-xl overflow-hidden shadow-md">
+              <div className="border border-border rounded-2xl overflow-hidden shadow-sm">
                 <Table>
-                  <TableHeader className="bg-[#1a3556]">
-                    <TableRow className="hover:bg-transparent">
-                      <TableHead className="font-bold text-white text-xs">Metric Description</TableHead>
-                      <TableHead className="text-right font-bold text-white text-xs">Year 1</TableHead>
-                      <TableHead className="text-right font-bold text-white text-xs">Year 2</TableHead>
-                      <TableHead className="text-right font-bold text-white text-xs">Year 3</TableHead>
-                      <TableHead className="text-right font-bold text-blue-200 text-xs bg-white/10">Total (3Y)</TableHead>
+                  <TableHeader className="bg-muted/50">
+                    <TableRow className="hover:bg-transparent border-none">
+                      <TableHead className="font-bold text-secondary text-[11px] uppercase">Metric</TableHead>
+                      <TableHead className="text-right font-bold text-secondary text-[11px] uppercase">Year 1</TableHead>
+                      <TableHead className="text-right font-bold text-secondary text-[11px] uppercase">Year 2</TableHead>
+                      <TableHead className="text-right font-bold text-secondary text-[11px] uppercase">Year 3</TableHead>
+                      <TableHead className="text-right font-black text-primary text-[11px] uppercase bg-primary/5">Total (3Y)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -150,15 +129,16 @@ export function SheetPreviewModal({ isOpen, onClose, sheet }) {
                       { label: "ERP Value", k: "total_erp" },
                       { label: "EUP Value", k: "total_eup" },
                       { label: "Rebate Amount", k: "total_rebate" },
-                      { label: "Gross Profit (GP)", k: "gross_profit" },
-                      { label: "EUP After Discount", k: "total_eup_after_discount" },
+                      { label: "Gross Profit (GP)", k: "gross_profit", highlight: true },
                     ].map((row, i) => (
-                      <TableRow key={i} className="text-[11px] border-b hover:bg-slate-50 transition-colors">
-                        <TableCell className="font-bold text-slate-600 italic uppercase tracking-tighter">{row.label}</TableCell>
-                        <TableCell className="text-right font-medium">{fmt(sheet.summary?.[`${row.k}_y1`])}</TableCell>
-                        <TableCell className="text-right font-medium">{fmt(sheet.summary?.[`${row.k}_y2`])}</TableCell>
-                        <TableCell className="text-right font-medium">{fmt(sheet.summary?.[`${row.k}_y3`])}</TableCell>
-                        <TableCell className="text-right font-black bg-blue-50 text-blue-800">{fmt(sheet.summary?.[`${row.k}_3y`])}</TableCell>
+                      <TableRow key={i} className={`text-[11px] border-b border-border hover:bg-muted/20 ${row.highlight ? 'bg-accent/5' : ''}`}>
+                        <TableCell className="font-bold text-secondary uppercase py-4">{row.label}</TableCell>
+                        <TableCell className="text-right">{fmt(sheet.summary?.[`${row.k}_y1`])}</TableCell>
+                        <TableCell className="text-right">{fmt(sheet.summary?.[`${row.k}_y2`])}</TableCell>
+                        <TableCell className="text-right">{fmt(sheet.summary?.[`${row.k}_y3`])}</TableCell>
+                        <TableCell className={`text-right font-black text-xs ${row.highlight ? '' : 'text-primary bg-primary/5'}`}>
+                          {fmt(sheet.summary?.[`${row.k}_3y`])}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -166,37 +146,45 @@ export function SheetPreviewModal({ isOpen, onClose, sheet }) {
               </div>
             </div>
 
-            {/* 4. Detailed Line Items Breakdown */}
-            <div className="space-y-4 pb-20">
-              <h3 className="font-bold text-lg text-[#1a3556] flex items-center gap-2 uppercase tracking-tight">
-                <Info size={20} className="text-blue-500" /> Line Item Details & Individual Calculations
+            {/* 4. Line Items Table */}
+            <div className="space-y-4 pb-12">
+              <h3 className="font-black text-lg text-secondary flex items-center gap-2 uppercase tracking-tight">
+                <Info size={22} className="text-secondary/50" /> Line Item Details
               </h3>
-              <div className="border rounded-xl overflow-hidden shadow-sm">
+              <div className="border border-border rounded-2xl overflow-hidden shadow-sm">
                 <Table>
-                  <TableHeader className="bg-slate-100">
-                    <TableRow className="text-[10px] uppercase font-black">
-                      <TableHead className="w-[350px]">Product / Part Number</TableHead>
-                      <TableHead className="text-center">Quantities (Y1/2/3)</TableHead>
-                      <TableHead className="text-right">Unit Net (USD)</TableHead>
-                      <TableHead className="text-right">Markup %</TableHead>
-                      <TableHead className="text-right bg-blue-50">Total EUP (3Y)</TableHead>
-                      <TableHead className="text-right bg-green-50 text-green-700">GP (3Y)</TableHead>
+                  <TableHeader className="bg-muted/30">
+                    <TableRow className="text-[10px] uppercase font-black border-none">
+                      <TableHead className="w-[400px] text-secondary">Product</TableHead>
+                      <TableHead className="text-center text-secondary">Quantities</TableHead>
+                      <TableHead className="text-right text-secondary">Unit Net</TableHead>
+                      <TableHead className="text-right text-secondary">Markup</TableHead>
+                      <TableHead className="text-right bg-primary/5 text-primary">Total EUP</TableHead>
+                      <TableHead className="text-right bg-accent/5 text-secondary">GP (3Y)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {sheet.line_items?.map((item) => (
-                      <TableRow key={item.id} className="text-xs hover:bg-slate-50 transition-colors border-b">
-                        <TableCell>
-                          <p className="font-black text-[#1a3556] uppercase tracking-tighter">{item.product_name}</p>
-                          <p className="text-[10px] text-slate-400 font-bold">{item.part_number} | {item.product_type}</p>
+                      <TableRow key={item.id} className="text-xs hover:bg-muted/10 transition-colors border-b border-border">
+                        <TableCell className="py-4">
+                          <div className="flex flex-col">
+                            <span className="font-black text-secondary uppercase text-[11px]">{item.product_name}</span>
+                            <span className="text-[10px] text-muted-foreground font-bold">{item.part_number}</span>
+                          </div>
                         </TableCell>
-                        <TableCell className="text-center font-bold text-slate-600">
-                          {item.quantity_y1} / {item.quantity_y2} / {item.quantity_y3}
+                        <TableCell className="text-center font-bold">
+                          <div className="flex justify-center gap-1">
+                            {['y1', 'y2', 'y3'].map(y => (
+                              <span key={y} className="bg-muted/50 px-1.5 rounded text-secondary">{item[`quantity_${y}`]}</span>
+                            ))}
+                          </div>
                         </TableCell>
-                        <TableCell className="text-right font-medium text-slate-500 italic">${fmt(item.unit_net_usd_y1)}</TableCell>
-                        <TableCell className="text-right font-black text-blue-600">{(item.markup_percentage_y1 * 100).toFixed(1)}%</TableCell>
-                        <TableCell className="text-right font-black text-slate-900 bg-blue-50">{fmt(item.calculated?.total_eup_3y)}</TableCell>
-                        <TableCell className="text-right font-black bg-green-50 text-green-700 underline">{fmt(item.calculated?.total_gp_3y)}</TableCell>
+                        <TableCell className="text-right text-muted-foreground">${fmt(item.unit_net_usd_y1)}</TableCell>
+                        <TableCell className="text-right font-black text-secondary">{fmtPct(item.markup_percentage_y1)}</TableCell>
+                        <TableCell className="text-right font-black text-primary bg-primary/5">{fmt(item.calculated?.total_eup_3y)}</TableCell>
+                        <TableCell className="text-right font-black text-foreground bg-accent/5">
+                           {fmt(item.calculated?.total_gp_3y)}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -206,20 +194,30 @@ export function SheetPreviewModal({ isOpen, onClose, sheet }) {
           </div>
         </div>
 
-        {/* Footer - Fixed (Scroll nahi hoga) */}
-        <div className="p-4 bg-slate-100 border-t flex justify-between items-center px-8 flex-shrink-0">
-           <div className="flex gap-8 items-center">
-              <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase">
-                <User size={14} className="text-slate-400" /> 
-                Created By: <span className="text-slate-800">{sheet.sales_user?.first_name} {sheet.sales_user?.last_name}</span>
+        {/* --- Footer (Clean & Secondary) --- */}
+        <footer className="p-4 bg-muted/10 border-t flex justify-between items-center px-8 flex-shrink-0">
+          <div className="flex gap-10 items-center">
+            <div className="flex items-center gap-2.5 text-[11px] font-bold uppercase text-secondary">
+              <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+                <User size={14} />
               </div>
-              <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500 border-l pl-8 uppercase">
-                <Calendar size={14} className="text-slate-400" /> 
-                Submitted At: <span className="text-slate-800">{new Date(sheet.submitted_at).toLocaleDateString('en-GB')}</span>
+              <div>
+                <p className="text-[9px] opacity-60 leading-none">Creator</p>
+                <p className="text-foreground">{sheet.sales_user?.first_name} {sheet.sales_user?.last_name}</p>
               </div>
-           </div>
-           <p className="text-[10px] text-slate-400 font-mono tracking-tighter italic">ID: {sheet.uuid}</p>
-        </div>
+            </div>
+            <div className="flex items-center gap-2.5 text-[11px] font-bold border-l border-border pl-10 uppercase text-secondary">
+              <Calendar size={14} /> 
+              <div>
+                <p className="text-[9px] opacity-60 leading-none">Submitted</p>
+                <p className="text-foreground">
+                  {sheet.submitted_at ? new Date(sheet.submitted_at).toLocaleDateString('en-GB') : 'N/A'}
+                </p>
+              </div>
+            </div>
+          </div>
+          <code className="text-[10px] text-muted-foreground bg-muted/50 px-2 py-1 rounded">ID: {sheet.uuid}</code>
+        </footer>
       </DialogContent>
     </Dialog>
   );
