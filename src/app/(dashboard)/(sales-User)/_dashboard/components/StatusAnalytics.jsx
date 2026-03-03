@@ -1,18 +1,25 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { LayoutDashboard } from 'lucide-react';
 
 const StatusAnalytics = ({ breakdown }) => {
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const chartData = (breakdown || []).filter(item => item.count > 0);
   const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6'];
 
+  if (!isMounted) return <div className="h-[300px] w-full animate-pulse bg-slate-100 rounded-xl" />;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-      
-      {/* Chart Card */}
       <Card className="lg:col-span-3 border-none shadow-sm bg-white rounded-xl overflow-hidden border border-slate-100">
         <CardHeader className="pb-0 pt-5 px-6 flex flex-row items-center justify-between">
           <div className="flex items-center gap-3">
@@ -27,8 +34,9 @@ const StatusAnalytics = ({ breakdown }) => {
         </CardHeader>
 
         <CardContent className="px-6 pb-6 pt-3">
-          <div className="h-[200px] w-full bg-slate-50/50 rounded-xl border border-slate-100/50 p-3 shadow-inner">
+          <div className="h-[250px] w-full bg-slate-50/50 rounded-xl border border-slate-100/50 p-3 shadow-inner">
             <ResponsiveContainer width="100%" height="100%">
+              {/* data={chartData} check zaroori hai */}
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                 <defs>
                   {COLORS.map((color, i) => (
@@ -72,7 +80,7 @@ const StatusAnalytics = ({ breakdown }) => {
         </CardContent>
       </Card>
 
-      {/* Sidebar Details */}
+      {/* Sidebar Details code same rahega... */}
       <Card className="lg:col-span-2 border-none shadow-sm bg-white rounded-xl overflow-hidden border border-slate-100 flex flex-col">
         <CardHeader className="py-4 px-5 border-b border-slate-50 bg-slate-50/30">
           <CardTitle className="text-xs font-black text-slate-500 uppercase tracking-[0.15em]">Distribution Details</CardTitle>

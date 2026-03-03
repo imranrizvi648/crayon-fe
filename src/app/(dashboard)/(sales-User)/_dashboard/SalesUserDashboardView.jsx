@@ -1,17 +1,29 @@
 "use client";
-
+import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react'; // React import ki zarurat nahi, sirf hooks
 import { useDashboard } from "./hook/useDashboard";
 import HeroSection from "./components/HeroSection";
 import StatsGrid from "./components/StatsGrid";
-import StatusAnalytics from "./components/StatusAnalytics";
+const StatusAnalytics = dynamic(
+  () => import("./components/StatusAnalytics"),
+  { 
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full bg-slate-100 animate-pulse rounded-xl" /> 
+  }
+);
 import RecentSheets from "./components/RecentSheets";
 import ActivityFeed from "./components/ActivityFeed";
 import { Button } from "@/components/ui/button";
 
-export default function DashboardPage() {
+export default function SalesUserDashboardView() {
   const { data, loading, sheetsLoading, error, refresh, fetchSheets } = useDashboard();
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Error State: Ab ye theme variables use karega
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background text-foreground">
@@ -29,22 +41,21 @@ export default function DashboardPage() {
     );
   }
 
+  // Jab tak mount na ho, empty ya loading state dikhayen taake Recharts crash na ho
+  if (!isMounted) return null; 
+
   return (
-    // bg-background aur text-foreground use karne se Light/Dark toggle automatically kaam karega
-    <div className="min-h-screen  px-5 space-y-8 pb-10 text-foreground transition-colors duration-300">
-      
-      {/* HeroSection: Isme data.user pass ho raha hai */}
+    <div className="min-h-screen px-5 space-y-8 pb-10 text-foreground transition-colors duration-300">
       <HeroSection user={data.user} isLoading={loading} />
-
-      {/* StatsGrid: Dashboard stats */}
       <StatsGrid stats={data.stats} isLoading={loading} />
-
-      {/* Analytics Section */}
-      <StatusAnalytics breakdown={data.stats.breakdown} isLoading={loading} />
+      
+      {/* Analytics: data check ke sath pass karein */}
+      {data.stats && (
+        <StatusAnalytics breakdown={data.stats.breakdown} isLoading={loading} />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          {/* Recent Sheets: Tables/Cards automatically border-border use karenge */}
           <RecentSheets 
             sheets={data.sheets} 
             pagination={data.pagination} 
@@ -52,8 +63,6 @@ export default function DashboardPage() {
             onPageChange={fetchSheets} 
           />
         </div>
-        
-        {/* Activity Feed: Isko sidebar color ya card color mil sakta hai logic ke mutabiq */}
         <ActivityFeed activities={data.activities} isLoading={loading} />
       </div>
     </div>

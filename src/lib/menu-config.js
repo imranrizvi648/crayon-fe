@@ -12,6 +12,12 @@ export const ALL_MENU_ITEMS = [
   { title: "Products", url: "/products", icon: Package, roles: ["SALES_USER"] },
   { title: "Workflow", url: "/workflow", icon: GitBranch, roles: ["SALES_USER"]  },
 
+  // Sales specific (Jo aapne dikhaya)
+  { title: "Manager Dashboard", url: "/dashboard", icon: FileText, roles: ["SALES_MANAGER" ] },
+  { title: "Team Sheets", url: "/team-sheets", icon: FileText, roles: ["SALES_MANAGER" ] },
+  { title: "Team Members", url: "/team-members", icon: Users, roles: ["SALES_MANAGER" ] },
+  { title: "Approvals", url: "/approvals", icon: Package, roles: ["SALES_MANAGER"] },
+  { title: "Reports", url: "/reports", icon: TrendingUp, roles: ["SALES_MANAGER"]  },
 
   // Admin & Super Admin specific
   { title: "User Management", url: "/users", icon: Users, roles: ["ADMIN"] },

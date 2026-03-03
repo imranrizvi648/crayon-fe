@@ -52,7 +52,7 @@ export function proxy(request) {
       // 4️⃣ Roles Permissions (Baqi pages ki security ke liye)
       const ROLE_PERMISSIONS = {
         ADMIN: ["/"],
-        SALES_MANAGER: ["/", "/dashboard", "/team-sheets", "/approval-que", "/report-and-analytic", "/user-management"],
+        SALES_MANAGER: ["/", "/dashboard", "/team-sheets", "/team-members", "/approvals", "/reports"],
         SALES_USER: ["/", "/sheets", "/dashboard", "/customers", "/products", "/workflow"],
         FINANCE_ANALYST: ["/", "/finance"],
         // Baqi roles ke allowed paths yahan add karein

@@ -16,21 +16,24 @@ export function AppSidebar() {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const { user, loading } = useSelector(state => state.auth);
-  const [userRole, setUserRole] = useState('sales_user');
+  const [userRole, setUserRole] = useState('');
 
-  useEffect(() => {
-    if (user?.role) {
-      setUserRole(user.role.toLowerCase());
-    }
-  }, [user]);
+ useEffect(() => {
+  // Check karein agar roles array hai toh pehla item lein
+  const roleFromRedux = user?.roles?.[0] || user?.role; 
+  
+  if (roleFromRedux) {
+    setUserRole(roleFromRedux.toUpperCase()); // SALES_MANAGER
+  }
+}, [user]);
 
   const handleLogout = () => {
     dispatch(logoutUser()); 
   };
 
   const filteredMenu = ALL_MENU_ITEMS.filter(item => 
-    item.roles.map(r => r.toLowerCase()).includes(userRole)
-  );
+  item.roles.some(r => r.toUpperCase() === userRole.toUpperCase())
+);
 
   return (
     <Sidebar className="border-none h-full bg-[#ffffff]">

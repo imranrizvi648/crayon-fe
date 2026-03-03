@@ -15,16 +15,14 @@ export default function WorkflowPage() {
       {/* Header Section - Isko main container ke andar rakha */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div className="flex items-center gap-4">
-          <div className="bg-secondary p-3 rounded-2xl shadow-lg shadow-secondary/20">
-            <LayoutDashboard className="text-white" size={23} />
-          </div>
+        
           <div>
-            <h1 className="text-2xl font-bold text-secondary">
-              Workflow <span className=""></span>
+               <h1 className="text-2xl font-black  text-gray-700 ">
+              Workflow
             </h1>
-            {/* <p className="text-sm text-muted-foreground font-medium italic">
-              Manage Wo precision
-            </p> */}
+             <p className="text-muted-foreground text-sm font-medium mt-1">
+              Manage and review your workflow sheets in one place
+            </p>
           </div>
         </div>
       </div>

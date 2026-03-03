@@ -13,8 +13,7 @@ import { toast } from "sonner";
 export default function CostingSheetsList() {
   const { data, loading, fetchSheets, deleteSheet, updateSheet, fetchSheetDetail } = useCostingSheets();
   
-  // --- UI STATES ---
-  // Wizard aur Template ki states yahan se hta di gayi hain
+
 
   // Preview States
   const [showPreview, setShowPreview] = useState(false);
@@ -88,14 +87,12 @@ export default function CostingSheetsList() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="bg-secondary p-3 rounded-2xl shadow-lg shadow-secondary/20">
-            <LayoutDashboard className="text-white" size={23} />
-          </div>
+       
           <div>
-            <h1 className="text-2xl font-bold text-secondary">
-              Costing <span className="">Dashboard</span>
+           <h1 className="text-2xl font-black  text-gray-700 ">
+              Costing  Dashboard
             </h1>
-            <p className="text-sm text-muted-foreground font-medium italic">
+           <p className="text-muted-foreground text-sm font-medium mt-1">
               Manage FEWA and MCC estimates with precision
             </p>
           </div>

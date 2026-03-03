@@ -6,5 +6,5 @@ export const store = configureStore({
     auth: authReducer, // Ab "state.auth" har jagah accessible hoga
   },
   // DevTools enable rakhein taake debugging asaan ho
-  devTools: process.env.NODE_ENV !== 'production',
+  // devTools: process.env.NODE_ENV !== 'production',
 });

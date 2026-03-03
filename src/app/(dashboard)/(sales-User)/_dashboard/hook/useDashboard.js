@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "@/lib/axios";
 import { ENDPOINTS } from "@/lib/constants";
+import { toast } from "sonner"; // Sonner import kiya
 
 export const useDashboard = () => {
   const [data, setData] = useState({
@@ -19,10 +20,10 @@ export const useDashboard = () => {
 
   const fetchDashboardData = useCallback(async (page = 1) => {
     try {
-      // console.log(`🚀 Fetching Page: ${page}`); // DEBUG
-      
       if (page === 1) setLoading(true);
       else setSheetsLoading(true);
+
+      setError(null); // Reset error state before fetching
 
       const [userRes, summaryRes, sheetsRes, activityRes] = await Promise.all([
         api.get(ENDPOINTS.AUTH.ME),
@@ -31,14 +32,9 @@ export const useDashboard = () => {
         api.get(ENDPOINTS.DASHBOARD.USER_ACTIVITY(1, 10))
       ]);
 
-      console.log("📦 API Response (Sheets):", activityRes.data); // DEBUG: Check if total_count exists
-
       const profile = userRes.data;
       const summary = summaryRes.data;
-
-      // Ensure total count is a number
       const apiTotal = sheetsRes.data.total_count || summary.total_costing_sheets || 0;
-      // console.log(`🔢 Total Records Found: ${apiTotal}`); // DEBUG
 
       setData(prev => ({
         ...prev,
@@ -84,12 +80,17 @@ export const useDashboard = () => {
       }));
 
     } catch (err) {
-      // console.error("❌ API Error:", err);
-      setError(err.response?.data?.message || "Failed to load dashboard data");
+      const msg = err.response?.data?.message || "Failed to load dashboard data";
+      setError(msg);
+      
+      // Error Toast
+      toast.error("Fetch Error", {
+        description: msg,
+      });
+      
     } finally {
       setLoading(false);
       setSheetsLoading(false);
-      // console.log("✅ Fetch Complete"); // DEBUG
     }
   }, []);
 
@@ -102,9 +103,12 @@ export const useDashboard = () => {
     loading, 
     sheetsLoading, 
     error, 
-    refresh: () => fetchDashboardData(1), 
+ 
+    refresh: () => {
+      toast.info("Updating dashboard...");
+      fetchDashboardData(1);
+    }, 
     fetchSheets: (page) => {
-        console.log(`🖱️ Pagination Clicked! Going to page: ${page}`); // DEBUG
         fetchDashboardData(page);
     }
   };

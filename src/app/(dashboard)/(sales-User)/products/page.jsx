@@ -15,8 +15,8 @@ export default function ProductCatalogPage() {
       {/* Page Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-bold text-[#1a3556]">Product Catalog</h1>
-          <p className="text-sm text-slate-500">Browse Microsoft products and pricing</p>
+          <h1 className="text-2xl font-black  text-gray-700 ">Product Catalog</h1>
+           <p className="text-muted-foreground text-sm font-medium mt-1">Browse Microsoft products and pricing</p>
         </div>
             </div>
 

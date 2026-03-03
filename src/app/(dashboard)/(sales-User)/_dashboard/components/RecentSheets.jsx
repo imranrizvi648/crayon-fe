@@ -90,12 +90,7 @@ export default function RecentSheets({ sheets, pagination, onPageChange, isLoadi
                     <div className="flex items-center justify-end gap-6">
                       {getStatusBadge(sheet.status)}
                       <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary">
-                          <Eye size={16} />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-emerald-600">
-                          <Download size={16} />
-                        </Button>
+                       
                       </div>
                     </div>
                   </TableCell>

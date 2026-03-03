@@ -2,7 +2,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
-import { useDashboard } from "@/app/(dashboard)/(sales-User)/dashboard/hook/useDashboard";
+import { useDashboard } from"@/app/(dashboard)/(sales-User)/_dashboard/hook/useDashboard";
 
 import { Toaster } from "@/components/ui/sonner";
 
