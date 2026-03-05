@@ -34,7 +34,7 @@ export default function WorkflowSidebar({ sheets, selectedId, onSelect }) {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-1 text-slate-400">
                     <Hash size={10} />
-                    <span className={`text-[10px] font-bold uppercase tracking-tighter ${isActive ? "text-blue-600" : ""}`}>
+                    <span className={`text-[10px] font-bold uppercase tracking-tighter ${isActive ? "text-secondary" : ""}`}>
                       {sheet.sheet_number.split('-').slice(-1)}
                     </span>
                   </div>
@@ -50,7 +50,7 @@ export default function WorkflowSidebar({ sheets, selectedId, onSelect }) {
                 </div>
 
                 {/* Middle Row: Title (Compact) */}
-                <h3 className={`font-bold text-[13px] truncate ${isActive ? "text-blue-900" : "text-slate-700"}`}>
+                <h3 className={`font-bold text-[13px] truncate ${isActive ? "text-secondary" : "text-slate-700"}`}>
                   {sheet.opportunity_name || "Untitled Opportunity"}
                 </h3>
                 
@@ -60,7 +60,7 @@ export default function WorkflowSidebar({ sheets, selectedId, onSelect }) {
                     <User size={10} />
                     <p className="text-[11px] truncate">{sheet.customer_name}</p>
                   </div>
-                  <span className="font-bold text-blue-600 text-[12px]">
+                  <span className="font-bold text-secondary text-[12px]">
                     {sheet.currency_code} {new Intl.NumberFormat().format(sheet.total_eup)}
                   </span>
                 </div>

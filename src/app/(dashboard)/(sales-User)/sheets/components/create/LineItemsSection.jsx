@@ -47,7 +47,7 @@ export function LineItemsSection({ items, onChange, region, dealType }) {
 
   const generateUID = () => Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
 
-  const addRow = () => {
+const addRow = () => {
     const newItem = {
       id: generateUID(),
       tab_year: isRamped ? activeYear : "year1",
@@ -58,24 +58,46 @@ export function LineItemsSection({ items, onChange, region, dealType }) {
     onChange([...items, newItem]);
   };
 
+  // ✅ FIX: Yeh useEffect add karein
+  useEffect(() => {
+    // Current tab/year ka data filter karein
+    const currentYearItems = isRamped 
+      ? items.filter(i => i.tab_year === activeYear)
+      : items; // Normal mode mein saare items dekho
+
+    // Agar current view mein koi item nahi hai, toh automatically row add kardo
+    if (currentYearItems.length === 0) {
+      addRow();
+    }
+  }, [activeYear, isRamped, items.length]);
+
   const updateItem = (id, field, value) => {
     onChange(items.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
   };
 
-  const handleBatchPaste = (parsedItemsToMerge, currentIndex) => {
-    let updatedItems = [...items];
-    
-    // Sirf tab wali empty row dhundho aur replace karo
-    const emptyRowIndex = updatedItems.findIndex(i => i.tab_year === activeYear && !i.part_number && !i.item_name);
-    
-    if (emptyRowIndex !== -1) {
-      updatedItems.splice(emptyRowIndex, 1, ...parsedItemsToMerge);
-    } else {
-      updatedItems.push(...parsedItemsToMerge);
-    }
-    onChange(updatedItems);
-  };
+const handleBatchPaste = (parsedItemsToMerge, currentIndex) => {
+    // 1. Pehle pure items ki copy lo
+    let allItems = [...items];
 
+    // 2. Sirf active tab ke items dhoondo taaki humein sahi 'global index' mil sake
+    // Kyunke 'currentIndex' sirf displayedItems ka index hota hai
+    const displayedItemsIds = displayedItems.map(i => i.id);
+    const targetId = displayedItemsIds[currentIndex];
+    
+    // 3. Global array mein wo index dhoondo jahan paste hua hai
+    const globalIndex = allItems.findIndex(i => i.id === targetId);
+
+    if (globalIndex !== -1) {
+      // FIX: 'globalIndex' se shuru karo, 1 item (khali row) ko delete karo, 
+      // aur uski jagah saara naya data daal do.
+      allItems.splice(globalIndex, 1, ...parsedItemsToMerge);
+    } else {
+      // Fallback: Agar kuch na mile toh end mein push kardo
+      allItems.push(...parsedItemsToMerge);
+    }
+
+    onChange(allItems);
+  };
   // --- COPY BUTTONS LOGIC ---
   const copyToOtherYear = (targetYear) => {
     const year1Items = items.filter(i => i.tab_year === "year1" && i.part_number);

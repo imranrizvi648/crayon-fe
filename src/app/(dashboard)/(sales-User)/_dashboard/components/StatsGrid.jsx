@@ -39,14 +39,15 @@ export default function StatsGrid({ stats }) {
       icon: <CheckCircle size={20} className="text-white" />, 
       color: "bg-emerald-500" // Success color
     },
-    { 
+ { 
       title: "Total Value", 
-      value: stats.totalValue ? `${stats.totalValue}` : "—", 
+      // FIX: .replace('$', '') lagaya hai taake backend wala $ remove ho jaye
+      value: stats.totalValue ? `AED ${String(stats.totalValue).replace('$', '')}` : "—", 
       subtitle: "Active deals", 
       change: "+18.7%", 
       isUp: true, 
       icon: <DollarSign size={20} className="text-secondary-foreground" />, 
-      color: "bg-secondary" // Deep Blue (#27455C)
+      color: "bg-secondary" 
     },
   ];
 
@@ -57,7 +58,7 @@ export default function StatsGrid({ stats }) {
           <CardHeader className="flex flex-row items-start justify-between pb-2 space-y-0">
             <div>
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em]">{item.title}</p>
-              <CardTitle className="text-3xl font-black mt-1 tracking-tight text-foreground">
+              <CardTitle className="text-2xl font-black mt-1 tracking-tight text-foreground">
                 {item.value}
               </CardTitle>
             </div>

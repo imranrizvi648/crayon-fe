@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -31,7 +31,9 @@ export function LineItemRow({
       const columns = row.split("\t").map(col => col.replace(/^"|"$/g, '').trim());
       const partNo = columns[0] || "";
       const itemNameRaw = columns[1] || "";
-      if (!partNo || partNo.toLowerCase().includes("part number")) continue;
+
+      // 1. Skip ONLY if it's the header row
+      if (!partNo || partNo.trim().toLowerCase() === "part number") continue;
 
       const rawQty = Number(columns[11]?.replace(/[^0-9.-]+/g, "")) || 1;
       const netUsd = Number(columns[2]?.replace(/[^0-9.-]+/g, "")) || 0;
@@ -40,10 +42,9 @@ export function LineItemRow({
       const crMU = Number(columns[6]?.replace(/[^0-9.-]+/g, "")) || 0;
       const reb = Number(columns[16]?.replace(/[^0-9.-]+/g, "")) || 0;
 
-      // 100% ISOLATION: Yeh data sirf current active tab ko milega!
-      let newItem = {
+      parsedItems.push({
         id: generateUID(),
-        tab_year: activeYear, // <--- MASTER FIX (Ye row ab is tab ki ho gayi)
+        tab_year: activeYear,
         category: "Enterprise Online",
         part_number: partNo,
         item_name: itemNameRaw,
@@ -55,14 +56,14 @@ export function LineItemRow({
         crayon_markup: crMU,
         rebate_percent: reb,
         swo_gp_percent: 50
-      };
-
-      parsedItems.push(newItem);
+      });
     }
     
-    if (onBatchPaste) onBatchPaste(parsedItems, index);
+    // 2. Pass items and the current row index to the parent
+    if (parsedItems.length > 0 && onBatchPaste) {
+        onBatchPaste(parsedItems, index); 
+    }
   };
-
   // Auto Calculations
   const currentNet = Number(item.unit_net_usd) || 0;
   const currentErp = Number(item.unit_erp_usd) || 0;

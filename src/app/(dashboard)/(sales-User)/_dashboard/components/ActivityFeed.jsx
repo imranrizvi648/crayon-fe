@@ -6,16 +6,14 @@ import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
 export default function ActivityFeed({ activities }) {
+
   const getIcon = (action) => {
     switch (action) {
       case 'approve': 
-        // Success color (Green) usually theme se bahar hota hai for clarity
         return { icon: <Check size={14} />, bg: 'bg-emerald-500/10 text-emerald-600' };
       case 'create': 
-        // Primary color (Scarlet Red) for creation actions
         return { icon: <Plus size={14} />, bg: 'bg-primary/10 text-primary' };
       case 'status_change': 
-        // Secondary color (Deep Blue) for generic changes
         return { icon: <RefreshCw size={14} />, bg: 'bg-secondary/10 text-secondary' };
       default: 
         return { icon: <Bell size={14} />, bg: 'bg-muted text-muted-foreground' };
@@ -23,17 +21,19 @@ export default function ActivityFeed({ activities }) {
   };
 
   return (
-    <Card className="h-full  shadow-md overflow-hidden flex flex-col min-h-[500px] bg-card">
+    // Card se min-h-[500px] hata kar height ko natural rakha hai
+    <Card className="shadow-md overflow-hidden flex flex-col bg-card">
       <CardHeader className="border-b py-4 px-6 flex-shrink-0 bg-background">
         <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
-          {/* Dashboard primary red icon */}
           <RefreshCw className="text-primary animate-spin-slow" size={20} /> 
           <span className="tracking-tight">Recent Activity</span>
         </CardTitle>
       </CardHeader>
       
-      <CardContent className="p-6 relative flex-1 overflow-y-auto custom-scrollbar bg-background">
-        {/* Adjusted Vertical Line - Global border color use kiya */}
+      {/* Yahan max-h-[380px] add kiya hai taake 5 items ke baad scroll aa jaye */}
+      <CardContent className="p-6 relative overflow-y-auto max-h-[430px] custom-scrollbar bg-background">
+        
+        {/* Adjusted Vertical Line */}
         <div className="absolute left-[39px] top-8 bottom-8 w-[1px] bg-border z-0" />
         
         <div className="space-y-6">
@@ -51,11 +51,11 @@ export default function ActivityFeed({ activities }) {
                   </div>
 
                   <div className="pt-0.5">
-                    {/* Activity Text - Global foreground color */}
+                    {/* Activity Text */}
                     <p className="text-[12px] font-bold text-foreground/90 leading-snug group-hover:text-primary transition-colors duration-200">
                       {item.text}
                     </p>
-                    {/* Timestamp - Global muted color */}
+                    {/* Timestamp */}
                     <p className="text-[10px] text-muted-foreground mt-1 font-bold tracking-tight opacity-70">
                       {formatDistanceToNow(new Date(item.time), { addSuffix: true })}
                     </p>

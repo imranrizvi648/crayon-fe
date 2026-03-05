@@ -6,7 +6,7 @@ export default function WorkflowDetail({ workflowData, selectedSheetInfo, isLoad
   // 1. Loading state ko poore component par apply karein
   if (isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-2xl border shadow-sm h-full">
+      <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-md border shadow-sm h-full">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
         <p className="text-sm font-medium text-slate-500 italic">Syncing workflow details...</p>
       </div>
@@ -25,14 +25,14 @@ export default function WorkflowDetail({ workflowData, selectedSheetInfo, isLoad
 
   // Baki poora UI yahan se shuru hoga...
   return (
-    <div className="flex-1 bg-white rounded-2xl border shadow-sm p-6 overflow-y-auto custom-scrollbar">
+    <div className="flex-1 bg-white rounded-md border shadow-sm p-6 overflow-y-auto custom-scrollbar">
        {/* Ab header aur data saath mein load honge */}
        <div className="flex justify-between items-end border-b pb-4 mb-6 text-black"> <div>
-          <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">{selectedSheetInfo?.sheet_number}</h1>
-          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">{selectedSheetInfo?.customer_name}</p>
+          <h1 className="text-xl font-extrabold text-slate-800 tracking-tight">{selectedSheetInfo?.sheet_number}</h1>
+          <p className="text-xs text-slate-500 font-semibold  tracking-wider">{selectedSheetInfo?.customer_name}</p>
         </div>
         <div className="text-right">
-          <p className="text-lg font-black text-blue-600 leading-none">
+          <p className="text-lg font-bold text-secondary leading-none">
             {selectedSheetInfo?.currency_code} {new Intl.NumberFormat().format(selectedSheetInfo?.total_eup)}
           </p>
           <span className="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-400 uppercase mt-1 inline-block">
@@ -81,7 +81,7 @@ export default function WorkflowDetail({ workflowData, selectedSheetInfo, isLoad
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[9px] font-black text-blue-500/50 uppercase italic">Step 0{step.step_number}</span>
+                      <span className="text-[9px] font-black text-secondary/50 uppercase italic">Step 0{step.step_number}</span>
                       <p className="font-bold text-[13px] text-slate-800">{step.title}</p>
                     </div>
                     <p className="text-[11px] text-slate-500 leading-relaxed">{step.description}</p>
@@ -119,7 +119,7 @@ export default function WorkflowDetail({ workflowData, selectedSheetInfo, isLoad
                 {step.comments && (
                   <div className="mt-3 p-2 bg-blue-50/50 rounded-lg border border-blue-100/50 flex gap-2 items-start">
                     <MessageSquare size={12} className="text-blue-400 mt-0.5" />
-                    <p className="text-[10px] text-blue-700 italic font-medium leading-tight">
+                    <p className="text-[10px] text-secondary italic font-medium leading-tight">
                       "{step.comments}"
                     </p>
                   </div>

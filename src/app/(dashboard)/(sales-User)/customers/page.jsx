@@ -23,9 +23,9 @@ export default function CustomersPage() {
           </p>
         </div>
         
-        <Button className="bg-primary hover:bg-primary/90 text-white shadow-sm shadow-primary/20 px-8 py-5 rounded-sm font-bold  tracking-wider transition-all hover:scale-105 active:scale-95 gap-2">
+        {/* <Button className="bg-primary hover:bg-primary/90 text-white shadow-sm shadow-primary/20 px-8 py-5 rounded-sm font-bold  tracking-wider transition-all hover:scale-105 active:scale-95 gap-2">
           <UserPlus size={20} /> Add Customer
-        </Button>
+        </Button> */}
       </div>
 
       {/* Stats Widgets */}
@@ -39,7 +39,7 @@ export default function CustomersPage() {
         />
         <StatCard 
           title="Portfolio Value" 
-          value="$5.8M" 
+          value="AED 5.8M" 
           label="Projected revenue" 
           icon={<DollarSign size={20} />} 
           variant="success" 
@@ -75,11 +75,11 @@ function StatCard({ title, value, label, icon, variant }) {
   };
 
   return (
-    <div className="bg-card p-6 rounded-2xl shadow-sm border border-border flex justify-between items-center group hover:border-primary/20 transition-all duration-300">
+    <div className="bg-card p-6 rounded-sm shadow-sm border border-border flex justify-between items-center group hover:border-primary/20 transition-all duration-300">
       <div className="space-y-1">
         <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.15em]">{title}</p>
         <div className="flex items-baseline gap-2">
-          <h3 className="text-3xl font-black text-foreground tracking-tighter">{value}</h3>
+          <h3 className="text-2xl font-extrabold text-foreground ">{value}</h3>
           <TrendingUp size={14} className="text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
         <p className="text-[10px] text-secondary font-bold uppercase tracking-tighter opacity-70">

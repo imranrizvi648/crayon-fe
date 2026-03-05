@@ -25,14 +25,23 @@ export const useDashboard = () => {
 
       setError(null); // Reset error state before fetching
 
-      const [userRes, summaryRes, sheetsRes, activityRes] = await Promise.all([
-        api.get(ENDPOINTS.AUTH.ME),
+      // Pehle user data lein taake hum user ki ID nikaal sakein
+      const userRes = await api.get(ENDPOINTS.AUTH.ME);
+      const profile = userRes.data;
+      
+      // ✅ User ki id extract karein. Agar API mein key different hai toh adjust karein.
+      const userId = profile.id || profile.user_id || 1;
+
+      // Ab baaki APIs call karein user ID ke sath
+      const [summaryRes, sheetsRes, activityRes] = await Promise.all([
         api.get(ENDPOINTS.DASHBOARD.DASHBOARD_SUMMARY),
         api.get(ENDPOINTS.DASHBOARD.RECENT_SHEETS, { params: { page, limit: 5 } }),
-        api.get(ENDPOINTS.DASHBOARD.USER_ACTIVITY(1, 10))
+        api.get(ENDPOINTS.DASHBOARD.USER_ACTIVITY(userId, 30)) // ✅ Update kiya: userId use kiya, 30 days tak
       ]);
-
-      const profile = userRes.data;
+      
+      console.log("👉 USER ACTIVITY RAW RESPONSE:", activityRes.data);
+      console.log("👉 USER ACTIVITY ARRAY:", activityRes.data?.recent_activity);
+      
       const summary = summaryRes.data;
       const apiTotal = sheetsRes.data.total_count || summary.total_costing_sheets || 0;
 

@@ -76,13 +76,13 @@ export function CustomerTable({ items, loading, pagination, onPageChange }) {
                     {customer.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                   
-                  <Button 
+                  {/* <Button 
                     variant="ghost" 
                     size="icon" 
                     className="h-9 w-9 text-secondary/40 hover:text-primary hover:bg-primary/5 transition-all"
                   >
                     <Edit3 size={16} />
-                  </Button>
+                  </Button> */}
                 </div>
               </TableCell>
             </TableRow>

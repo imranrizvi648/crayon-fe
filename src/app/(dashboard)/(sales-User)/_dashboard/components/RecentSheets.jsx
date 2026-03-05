@@ -16,11 +16,12 @@ export default function RecentSheets({ sheets, pagination, onPageChange, isLoadi
     
    const variants = {
   approved: "border-emerald-500 text-emerald-600 bg-emerald-50",
-  submitted: "border-primary/50 text-primary bg-primary/5", // Scarlet Red (#FF370F)
+  submitted: "border-secondary/50 text-secondary bg-secondary/5", // Scarlet Red (#FF370F)
   pending: "border-amber-500 text-amber-600 bg-amber-50",
   draft: "border-muted-foreground/30 text-muted-foreground bg-muted/20",
   locked: "border-gray-500 text-gray-600 bg-gray-50",           // Locked / disabled state
-  underreview: "border-blue-500 text-blue-600 bg-blue-50",    // Under review state
+  underreview: "border-blue-500 text-blue-600 bg-blue-50", 
+  rejected: "border-primary/50 text-primary bg-primary/5",  // Under review state
 };
 
     return (
