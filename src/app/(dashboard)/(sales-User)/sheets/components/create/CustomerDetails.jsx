@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react"; // useRef yahan shamil hai
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCostingSheets } from "../hooks/useCostingSheets"; 
+import { useCostingSheets } from "../../hooks/useCostingSheets"; 
 import { Loader2 } from "lucide-react";
 import { 
   Select, 
@@ -15,11 +15,12 @@ import {
 
 
 export function CustomerDetails({ data, onChange }) {
-  const { searchCustomers } = useCostingSheets();
+  const { searchCustomers,fetchExchangeRates } = useCostingSheets();
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  
+ 
+const [exchangeRates, setExchangeRates] = useState([]);
   // --- FIXED: Ye dono refs yahan define hona lazmi hain ---
   const dropdownRef = useRef(null);
   const searchTimeoutRef = useRef(null); 
@@ -87,6 +88,28 @@ const handleSelectChange = (name, value) => {
       if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     };
   }, []);
+
+  // 1. Component load hotay hi exchange rates fetch karein
+  useEffect(() => {
+    const loadRates = async () => {
+      const rates = await fetchExchangeRates();
+      setExchangeRates(rates);
+    };
+    loadRates();
+  }, []);
+
+  // 2. Currency select honay par rate update karne ka logic
+  const handleCurrencySelect = (currencyCode) => {
+    onChange("currency", currencyCode);
+    
+    // Select kiye gaye code ka rate find karein
+    const selectedData = exchangeRates.find(r => r.to_currency === currencyCode);
+    if (selectedData) {
+      onChange("exchange_rate", selectedData.rate); // Rate automatic set ho jayega
+    }
+  };
+
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-y-6 gap-x-4 p-5 bg-white relative">
@@ -169,8 +192,8 @@ const handleSelectChange = (name, value) => {
         <Select value={data.region} onValueChange={(v) => handleSelectChange("region", v)}>
           <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="UAE">UAE</SelectItem>
-            <SelectItem value="Europe">Europe</SelectItem>
+            <SelectItem value="Middle East">Middle East</SelectItem>
+            <SelectItem value="Africa">Africa</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -253,19 +276,35 @@ const handleSelectChange = (name, value) => {
         </Select>
       </div>
 
+      {/* CURRENCY DROPDOWN */}
       <div className="space-y-1.5">
         <Label className="text-[11px] text-slate-600 font-semibold">Currency</Label>
-        <Input name="currency" value={data.currency} readOnly className="h-9 bg-slate-50" />
+        <Select 
+          value={data.currency} 
+          onValueChange={handleCurrencySelect}
+        >
+          <SelectTrigger className="h-9 bg-white">
+            <SelectValue placeholder="Select Currency" />
+          </SelectTrigger>
+          <SelectContent>
+            {exchangeRates.map((rate) => (
+              <SelectItem key={rate.id} value={rate.to_currency}>
+                {rate.to_currency}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* ROW 4 */}
+      {/* EXCHANGE RATE (Editable Input) */}
       <div className="space-y-1.5">
         <Label className="text-[11px] text-slate-600 font-semibold">Exchange Rate</Label>
         <Input 
           type="number" 
           name="exchange_rate" 
+          step="0.000001" // Precision ke liye
           value={data.exchange_rate} 
-          onChange={handleInputChange} 
+          onChange={handleInputChange} // User khud bhi edit kar sakta hai
           className="h-9" 
         />
       </div>

@@ -214,6 +214,16 @@ const searchProducts = async (searchQuery) => {
   }
 };
 
+const fetchExchangeRates = async () => {
+  try {
+    const res = await api.get(ENDPOINTS.COSTING_SHEETS.GET_EXCHANGE_RATE || `${API_BASE_URL}exchange-rates`);
+    return res.data.rates || [];
+  } catch (err) {
+    console.error("❌ EXCHANGE RATE FETCH ERROR:", err);
+    return [];
+  }
+};
+
   return { 
     data, 
     loading, 
@@ -223,6 +233,7 @@ const searchProducts = async (searchQuery) => {
     deleteSheet,
     fetchSheetDetail,
     searchCustomers,
-    searchProducts
+    searchProducts,
+    fetchExchangeRates
   };
 };

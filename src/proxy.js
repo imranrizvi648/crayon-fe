@@ -39,7 +39,7 @@ export function proxy(request) {
           ADMIN: "/dashboard/analytics",
           SALES_MANAGER: "/dashboard",
           SALES_USER: "/dashboard",
-          FINANCE_ANALYST: "/finance",
+          FINANCE_ANALYST: "/dashboard",
           OPERATIONS_MANAGER: "/operations",
           SALES_LEAD: "/leads",
           EXECUTIVE: "/executive-summary"
@@ -54,7 +54,16 @@ export function proxy(request) {
         ADMIN: ["/"],
         SALES_MANAGER: ["/", "/dashboard", "/team-sheets", "/team-members", "/approvals", "/reports"],
         SALES_USER: ["/", "/sheets", "/dashboard", "/customers", "/products", "/workflow"],
-        FINANCE_ANALYST: ["/", "/finance"],
+        
+        FINANCE_ANALYST: [
+    "/", 
+    "/dashboard", 
+    "/financial-reports", 
+    "/approve-queue", 
+    "/exchange-rate",
+    "/preview",
+    "/audits" // 👈 Agar URL /preview/ID hai toh ye lazmi add karein
+  ],
         // Baqi roles ke allowed paths yahan add karein
       };
 

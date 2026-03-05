@@ -21,10 +21,10 @@ export default function HeroSection({ user }) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-    
-      className="bg-secondary rounded-xl p-8 mb-8 text-secondary-foreground flex justify-between items-center shadow-sm relative overflow-hidden border border-white/5"
+      // BG ab sidebar/secondary variable se lega (#27455C equivalent)
+      className="bg-secondary rounded-xl p-8 mb-8 text-secondary-foreground flex justify-between items-center shadow relative overflow-hidden border border-white/5"
     >
-     
+      {/* Dynamic Background Blurs - Primary color (Scarlet) ka touch diya hai */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mr-32 -mt-32 blur-3xl" />
       <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24 blur-3xl" />
 

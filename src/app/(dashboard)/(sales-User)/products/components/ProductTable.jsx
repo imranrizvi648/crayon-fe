@@ -9,14 +9,14 @@ export function ProductTable({ items, loading }) {
   // Category colors based on theme variables
   const getCategoryColor = (cat) => {
     const category = cat.toUpperCase();
-    if (category.includes("ENTERPRISE")) return "border-secondary/30 text-secondary bg-secondary/5";
-    if (category.includes("ADDITIONAL")) return "border-primary/30 text-primary bg-primary/5";
+    if (category.includes("ENTERPRISE")) return "border-secondary/30 text-secondary bg-secondary/5 ";
+    if (category.includes("ADDITIONAL")) return "border-secondary/30 text-secondary bg-secondary/5";
     return "bg-muted text-muted-foreground border-border";
   };
 
   if (loading) return (
-    <div className="p-20 text-center animate-pulse font-black text-secondary/40 uppercase tracking-widest italic">
-      Fetching Inventory...
+    <div className="p-20 text-center animate-pulse font-bold text-secondary  tracking-widest ">
+      Loading...
     </div>
   );
 
@@ -25,12 +25,12 @@ export function ProductTable({ items, loading }) {
       <Table>
         <TableHeader className="bg-secondary border-b-0">
           <TableRow className="hover:bg-secondary border-none">
-            <TableHead className="text-white font-black text-[10px] uppercase tracking-[0.2em] pl-6 h-12">SKU</TableHead>
-            <TableHead className="text-white font-black text-[10px] uppercase tracking-[0.2em] h-12">Product Details</TableHead>
-            <TableHead className="text-white font-black text-[10px] uppercase tracking-[0.2em] h-12">Category</TableHead>
-            <TableHead className="text-white font-black text-[10px] uppercase tracking-[0.2em] text-center h-12">Base Price</TableHead>
-            <TableHead className="text-white font-black text-[10px] uppercase tracking-[0.2em] text-center h-12">Markup</TableHead>
-            <TableHead className="text-white font-black text-[10px] uppercase tracking-[0.2em] text-right pr-6 h-12">Actions</TableHead>
+            <TableHead className="text-white font-bold text-[12px] uppercase tracking-[0.2em] pl-6 h-12">SKU</TableHead>
+            <TableHead className="text-white font-bold text-[12px] uppercase tracking-[0.2em] h-12">Product Details</TableHead>
+            <TableHead className="text-white font-bold text-[12px] uppercase tracking-[0.2em] h-12">Category</TableHead>
+            <TableHead className="text-white font-bold text-[12px] uppercase tracking-[0.2em] text-center h-12">Base Price</TableHead>
+            <TableHead className="text-white font-bold text-[12px] uppercase tracking-[0.2em] text-center h-12">Markup</TableHead>
+            <TableHead className="text-white font-bold text-[12px] uppercase tracking-[0.2em] text-right pr-6 h-12">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -44,7 +44,7 @@ export function ProductTable({ items, loading }) {
               {/* Product Name & License */}
               <TableCell className="py-4">
                 <div className="flex items-center gap-2">
-                  <div className="font-black text-foreground text-sm uppercase tracking-tight group-hover:text-primary transition-colors">
+                  <div className="font-bold text-foreground  uppercase tracking-tight  transition-colors">
                     {product.name}
                   </div>
                 </div>
@@ -62,14 +62,14 @@ export function ProductTable({ items, loading }) {
 
               {/* Pricing - Using Foreground */}
               <TableCell className="text-center">
-                <span className="font-black text-foreground text-sm">
+                <span className="font-bold text-foreground text-sm">
                   ${product.basePrice.toFixed(2)}
                 </span>
               </TableCell>
 
               {/* Markup - Using Primary Scarlet */}
               <TableCell className="text-center">
-                <div className="inline-flex items-center justify-center bg-primary/10 text-primary px-2 py-1 rounded font-black text-xs min-w-[45px]">
+                <div className="inline-flex items-center justify-center  text-secondary   rounded font-bold ">
                   {product.markup}
                 </div>
               </TableCell>

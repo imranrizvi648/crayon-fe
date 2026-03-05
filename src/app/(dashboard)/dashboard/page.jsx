@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import SalesUserDashboardView from "../(sales-User)/_dashboard/SalesUserDashboardView";
 import SalesManagerDashboardView from "../(Sales-Manager)/_SalesManagerDashboard/SalesManagerDashboardView";  
+import FinanceAnalystDashboardView from "../(Finance Analyst )/_FinanceAnalystDashboard/FinanceAnalystDashboardView";
 
 
 export default async function DashboardPage({ params }) {
@@ -29,28 +30,11 @@ export default async function DashboardPage({ params }) {
     
     case "SALES_MANAGER":
       return <SalesManagerDashboardView />;
-      // return (
-      //   <div className="p-8 text-center bg-white rounded-xl shadow-sm border border-slate-100">
-      //      <h2 className="text-xl font-bold text-slate-800">Sales Manager Dashboard</h2>
-      //      <p className="text-slate-500">View is being developed...</p>
-      //   </div>
-      // );
-
-    case "ADMIN":
-      return (
-        <div className="p-8 text-center bg-white rounded-xl shadow-sm border border-slate-100">
-           <h2 className="text-xl font-bold text-red-600">Admin Panel</h2>
-           <p className="text-slate-500">System analytics coming soon.</p>
-        </div>
-      );
-
+     
     case "FINANCE_ANALYST":
-      return (
-        <div className="p-8 text-center bg-white rounded-xl shadow-sm border border-slate-100">
-           <h2 className="text-xl font-bold text-blue-600">Finance Overview</h2>
-           <p className="text-slate-500">Financial reports will be displayed here.</p>
-        </div>
-      );
+      return <FinanceAnalystDashboardView />;
+       
+   
 
     // Baqi 3 roles: OPERATIONS_MANAGER, SALES_LEAD, EXECUTIVE
     case "OPERATIONS_MANAGER":

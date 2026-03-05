@@ -29,9 +29,11 @@ export const ENDPOINTS = {
   COSTING_SHEETS: {
     CREATE: `${API_BASE_URL}costing-sheets`,
     LIST: `${API_BASE_URL}costing-sheets`,
+     GET_EXCHANGE_RATE: `${API_BASE_URL}exchange-rates`,
     GET_BY_ID: (id) => `${API_BASE_URL}costing-sheets/${id}`,
     UPDATE: (id) => `${API_BASE_URL}costing-sheets/${id}`,
     DELETE: (id) => `${API_BASE_URL}costing-sheets/${id}`,
+    
   },
 
   //CUSTOMER
@@ -54,7 +56,6 @@ export const ENDPOINTS = {
 
   // 🔥 SALES MANAGER
   SALES_MANAGER: {
-
     DASHBOARD: {
       SUMMARY: `${API_BASE_URL}dashboard/sales-manager/summary`,
       STATS: `${API_BASE_URL}sales-manager/dashboard/stats`,
@@ -79,12 +80,21 @@ export const ENDPOINTS = {
       APPROVE_SHEET: (id) => `${API_BASE_URL}costing-sheets/${id}/submit`,
       REJECT_SHEET: (id) => `${API_BASE_URL}costing-sheets/${id}/reject`,
     },
-    
-    REPORTS:{
 
- PERFORMANCE: `${API_BASE_URL}users/sales-team`,
- TEAM_PERFORMANCE_OVERVIEW: `${API_BASE_URL}dashboard/sales-manager/report-analysis`,
+    REPORTS: {
+      PERFORMANCE: `${API_BASE_URL}users/sales-team`,
+      TEAM_PERFORMANCE_OVERVIEW: `${API_BASE_URL}dashboard/sales-manager/report-analysis`,
+    },
+  },
 
-    }
+  FINANCE_ANALYST: {
+    DASHBOARD: {
+      SUMMARY: `${API_BASE_URL}finance-analyst/dashboard/summary`,
+      HIGHT_PRIORITY_SHEETS: `${API_BASE_URL}finance-analyst/dashboard/high-priority`,
+      APPROVALS_QUEUE_LIST: `${API_BASE_URL}finance-analyst/dashboard/approval-queue`, 
+      EXCHANGE_RATE: `${API_BASE_URL}exchange-rates`,
+      UPDATE_EXCHANGE_RATE: (id) => `${API_BASE_URL}exchange-rates/${id}`,
+     AUDIT_LIST: `${API_BASE_URL}audit-logs`
+    },
   },
 };

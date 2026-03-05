@@ -83,7 +83,7 @@ export default function CostingSheetsList() {
   };
 
   return (
-    <div className="px-5 space-y-8 min-h-screen">
+    <div className=" space-y-8 min-h-screen">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-4">

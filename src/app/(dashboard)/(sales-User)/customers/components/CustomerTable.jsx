@@ -30,7 +30,7 @@ export function CustomerTable({ items, loading, pagination, onPageChange }) {
               <TableCell className="w-[80px] pl-6">
                 <div className={`p-3 rounded-2xl flex justify-center transition-all group-hover:scale-105 ${
                   customer.is_partner 
-                    ? 'bg-primary/10 text-primary shadow-sm shadow-primary/5' 
+                    ? 'bg-secondary/10 text-secondary' 
                     : 'bg-secondary/10 text-secondary'
                 }`}>
                   <User size={20} />
@@ -43,11 +43,7 @@ export function CustomerTable({ items, loading, pagination, onPageChange }) {
                   <span className="font-bold text-foreground text-sm tracking-tight ">
                     {customer.name}
                   </span>
-                  {customer.is_partner && (
-                    <Badge className="bg-primary text-white border-none text-[8px] h-4 uppercase font-black px-2 rounded-sm tracking-widest">
-                      Partner
-                    </Badge>
-                  )}
+                  
                 </div>
                 <div className="text-[11px] text-secondary font-semibold flex items-center gap-3 mt-1.5 opacity-80">
                   <span className="flex items-center gap-1">

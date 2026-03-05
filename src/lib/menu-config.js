@@ -28,10 +28,10 @@ export const ALL_MENU_ITEMS = [
 
 
   // Admin & Super Admin specific
-  { title: "User Management", url: "/users", icon: Users, roles: ["FINANCE_ANALYST"] },
-  { title: "Security", url: "/security", icon: ShieldCheck, roles: ["FINANCE_ANALYST"] },
-  { title: "System Settings", url: "/settings", icon: Settings, roles: ["FINANCE_ANALYST"] },
-  { title: "Financials", url: "/billing", icon: CreditCard, roles: ["FINANCE_ANALYST"] },
-  { title: "Help Desk", url: "/support", icon: LifeBuoy, roles: ["FINANCE_ANALYST"] },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, roles: ["FINANCE_ANALYST"] },
+  { title: "Approve Que", url: "/approve-queue", icon: ShieldCheck, roles: ["FINANCE_ANALYST"] },
+  { title: "Exchange Rate", url: "/exchange-rate", icon: Settings, roles: ["FINANCE_ANALYST"] },
+  
+  { title: "Audit Trail", url: "/audits", icon: LifeBuoy, roles: ["FINANCE_ANALYST"] },
 
 ];

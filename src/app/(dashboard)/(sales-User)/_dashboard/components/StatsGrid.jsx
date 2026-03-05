@@ -51,9 +51,9 @@ export default function StatsGrid({ stats }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 mt-12">
       {items.map((item, idx) => (
-        <Card key={idx} className=" shadow-lg overflow-hidden hover:shadow-md transition-all duration-300 bg-card group">
+        <Card key={idx} className=" shadow-md overflow-hidden hover:shadow-md transition-all duration-300 bg-card group">
           <CardHeader className="flex flex-row items-start justify-between pb-2 space-y-0">
             <div>
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em]">{item.title}</p>
