@@ -27,7 +27,7 @@ export function CustomerTable({ items, loading, pagination, onPageChange }) {
           {items.map((customer) => (
             <TableRow key={customer.id} className="group hover:bg-muted/20 transition-colors border-b border-border last:border-0">
               {/* Avatar Section - Using Secondary/Primary based on Partner status */}
-              <TableCell className="w-[80px] pl-6">
+              <TableCell className="w-20 pl-6">
                 <div className={`p-3 rounded-2xl flex justify-center transition-all group-hover:scale-105 ${
                   customer.is_partner 
                     ? 'bg-secondary/10 text-secondary' 

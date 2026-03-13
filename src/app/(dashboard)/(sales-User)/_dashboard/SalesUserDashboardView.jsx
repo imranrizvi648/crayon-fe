@@ -8,7 +8,7 @@ const StatusAnalytics = dynamic(
   () => import("./components/StatusAnalytics"),
   { 
     ssr: false,
-    loading: () => <div className="h-[300px] w-full bg-slate-100 animate-pulse rounded-xl" /> 
+    loading: () => <div className="h-75 w-full bg-slate-100 animate-pulse rounded-xl" /> 
   }
 );
 import RecentSheets from "./components/RecentSheets";
@@ -41,7 +41,7 @@ export default function SalesUserDashboardView() {
     );
   }
 
-  // Jab tak mount na ho, empty ya loading state dikhayen taake Recharts crash na ho
+  
   if (!isMounted) return null; 
 
   return (
@@ -54,7 +54,7 @@ export default function SalesUserDashboardView() {
         <StatusAnalytics breakdown={data.stats.breakdown} isLoading={loading} />
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2">
           <RecentSheets 
             sheets={data.sheets} 

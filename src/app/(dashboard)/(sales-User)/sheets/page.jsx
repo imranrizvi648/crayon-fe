@@ -4,14 +4,14 @@ import Link from "next/link"; // Link import kiya gaya hai
 import { useCostingSheets } from "./hooks/useCostingSheets";
 import { SheetTable } from "./components/SheetTable";
 import { EditSheetModal } from "./components/EditSheetModal";
-import { SheetPreviewModal } from "./components/SheetPreviewModal";
+
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RotateCcw, Plus, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
 
 export default function CostingSheetsList() {
-  const { data, loading, fetchSheets, deleteSheet, updateSheet, fetchSheetDetail } = useCostingSheets();
+  const { data, loading, fetchSheets, deleteSheet, updateSheet, fetchSheetDetail, exportSheet } = useCostingSheets();
   
 
 
@@ -164,16 +164,13 @@ export default function CostingSheetsList() {
           onDelete={deleteSheet}
           onEdit={handleEditClick} 
           onPreview={handlePreviewClick}
+          onExport={exportSheet}
         />
       </div>
 
       {/* --- MODALS --- */}
 
-      <SheetPreviewModal 
-        isOpen={showPreview} 
-        onClose={() => setShowPreview(false)} 
-        sheet={previewSheet} 
-      />
+     
 
       <EditSheetModal 
         isOpen={isEditOpen}

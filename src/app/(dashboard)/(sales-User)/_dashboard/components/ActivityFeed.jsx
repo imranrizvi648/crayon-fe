@@ -23,7 +23,7 @@ export default function ActivityFeed({ activities }) {
   return (
     // Card se min-h-[500px] hata kar height ko natural rakha hai
     <Card className="shadow-md overflow-hidden flex flex-col bg-card">
-      <CardHeader className="border-b py-4 px-6 flex-shrink-0 bg-background">
+      <CardHeader className="border-b py-4 px-6 shrink-0 bg-background">
         <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
           <RefreshCw className="text-primary animate-spin-slow" size={20} /> 
           <span className="tracking-tight">Recent Activity</span>
@@ -31,10 +31,10 @@ export default function ActivityFeed({ activities }) {
       </CardHeader>
       
       {/* Yahan max-h-[380px] add kiya hai taake 5 items ke baad scroll aa jaye */}
-      <CardContent className="p-6 relative overflow-y-auto max-h-[430px] custom-scrollbar bg-background">
+      <CardContent className="p-6 relative overflow-y-auto max-h-107.5 custom-scrollbar bg-background">
         
         {/* Adjusted Vertical Line */}
-        <div className="absolute left-[39px] top-8 bottom-8 w-[1px] bg-border z-0" />
+        <div className="absolute left-9.75 top-8 bottom-8 w-px bg-border z-0" />
         
         <div className="space-y-6">
           {activities && activities.length > 0 ? (
@@ -45,7 +45,7 @@ export default function ActivityFeed({ activities }) {
                   {/* Icon Circle */}
                   <div className={cn(
                     bg, 
-                    "h-8 w-8 min-w-[32px] rounded-full flex items-center justify-center ring-4 ring-background shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md"
+                    "h-8 w-8 min-w-8 rounded-full flex items-center justify-center ring-4 ring-background shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md"
                   )}>
                     {icon}
                   </div>

@@ -29,11 +29,13 @@ export const ENDPOINTS = {
   COSTING_SHEETS: {
     CREATE: `${API_BASE_URL}costing-sheets`,
     LIST: `${API_BASE_URL}costing-sheets`,
-     GET_EXCHANGE_RATE: `${API_BASE_URL}exchange-rates`,
+    GET_EXCHANGE_RATE: `${API_BASE_URL}exchange-rates`,
     GET_BY_ID: (id) => `${API_BASE_URL}costing-sheets/${id}`,
     UPDATE: (id) => `${API_BASE_URL}costing-sheets/${id}`,
     DELETE: (id) => `${API_BASE_URL}costing-sheets/${id}`,
-    
+    EXPORT_SHEET: (id) => `${API_BASE_URL}costing-sheets/${id}/export`,
+   
+
   },
 
   //CUSTOMER
@@ -91,10 +93,10 @@ export const ENDPOINTS = {
     DASHBOARD: {
       SUMMARY: `${API_BASE_URL}finance-analyst/dashboard/summary`,
       HIGHT_PRIORITY_SHEETS: `${API_BASE_URL}finance-analyst/dashboard/high-priority`,
-      APPROVALS_QUEUE_LIST: `${API_BASE_URL}finance-analyst/dashboard/approval-queue`, 
+      APPROVALS_QUEUE_LIST: `${API_BASE_URL}finance-analyst/dashboard/approval-queue`,
       EXCHANGE_RATE: `${API_BASE_URL}exchange-rates`,
       UPDATE_EXCHANGE_RATE: (id) => `${API_BASE_URL}exchange-rates/${id}`,
-     AUDIT_LIST: `${API_BASE_URL}audit-logs`
+      AUDIT_LIST: `${API_BASE_URL}audit-logs`,
     },
   },
 };

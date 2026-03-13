@@ -1,12 +1,12 @@
 import { 
   LayoutDashboard, FileText, Users, Package, GitBranch, 
-  TrendingUp, ShieldCheck, Settings, CreditCard, LifeBuoy 
+  TrendingUp, ShieldCheck, Settings, CreditCard, LifeBuoy, 
 } from "lucide-react";
 
 export const ALL_MENU_ITEMS = [
     
   // Sales specific (Jo aapne dikhaya)
-  { title: "Dasboard", url: "/dashboard", icon: FileText, roles: ["SALES_USER" ] },
+  { title: "Dasboard", url: "/dashboard", icon: LayoutDashboard, roles: ["SALES_USER" ] },
   { title: "My Sheets", url: "/sheets", icon: FileText, roles: ["SALES_USER" ] },
   { title: "Customers", url: "/customers", icon: Users, roles: ["SALES_USER" ] },
   { title: "Products", url: "/products", icon: Package, roles: ["SALES_USER"] },
@@ -31,7 +31,6 @@ export const ALL_MENU_ITEMS = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, roles: ["FINANCE_ANALYST"] },
   { title: "Approve Que", url: "/approve-queue", icon: ShieldCheck, roles: ["FINANCE_ANALYST"] },
   { title: "Exchange Rate", url: "/exchange-rate", icon: Settings, roles: ["FINANCE_ANALYST"] },
-  
   { title: "Audit Trail", url: "/audits", icon: LifeBuoy, roles: ["FINANCE_ANALYST"] },
 
 ];

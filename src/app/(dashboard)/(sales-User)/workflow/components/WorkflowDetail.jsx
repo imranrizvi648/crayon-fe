@@ -43,7 +43,7 @@ export default function WorkflowDetail({ workflowData, selectedSheetInfo, isLoad
 
       <div className="flex items-center gap-2 mb-6">
         <h3 className="font-bold text-sm text-slate-800 uppercase tracking-widest">Workflow Status</h3>
-        <div className="h-[1px] flex-1 bg-slate-100"></div>
+        <div className="h-px flex-1 bg-slate-100"></div>
       </div>
       
       {/* Steps Vertical Timeline */}
@@ -56,7 +56,7 @@ export default function WorkflowDetail({ workflowData, selectedSheetInfo, isLoad
             <div key={index} className="flex gap-4 pb-8 relative">
               {/* Vertical Line */}
               {!isLast && (
-                <div className={`absolute left-[13px] top-[28px] bottom-[-8px] w-[1.5px] ${
+                <div className={`absolute left-3.25 top-7 -bottom-2 w-[1.5px] ${
                   isCompleted ? "bg-green-200" : "bg-slate-100"
                 }`} />
               )}

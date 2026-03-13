@@ -35,9 +35,9 @@ export default function RecentSheets({ sheets, pagination, onPageChange, isLoadi
   };
 
   return (
-    <Card className="h-full shadow-md overflow-hidden flex flex-col min-h-[500px]  bg-card">
+    <Card className="h-full shadow-md overflow-hidden flex flex-col min-h-125  bg-card">
       {/* Header with Theme Background */}
-      <CardHeader className="flex flex-row items-center justify-between border-b py-4 px-6 flex-shrink-0 bg-background">
+      <CardHeader className="flex flex-row items-center justify-between border-b py-4 px-6 shrink-0 bg-background">
         <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
           <FileText className="text-primary" size={20} /> 
           <span>Recent Sheets</span>
@@ -69,7 +69,7 @@ export default function RecentSheets({ sheets, pagination, onPageChange, isLoadi
             <TableBody>
               {sheets?.map((sheet) => (
                 <TableRow key={sheet.id} className="hover:bg-muted/20 border-b transition-colors group">
-                  <TableCell className="w-[60px] pl-6">
+                  <TableCell className="w-15 pl-6">
                     {/* Icon wrapper uses secondary (Deep Blue) with primary hover */}
                     <div className="bg-secondary/10 p-2 rounded-lg flex justify-center text-secondary group-hover:text-primary transition-colors">
                       <FileText size={18} />
@@ -77,7 +77,7 @@ export default function RecentSheets({ sheets, pagination, onPageChange, isLoadi
                   </TableCell>
                   <TableCell className="py-4">
                     {/* Text colors from theme variables */}
-                    <div className="font-bold text-foreground text-sm truncate max-w-[250px]">{sheet.id}</div>
+                    <div className="font-bold text-foreground text-sm truncate max-w-62.5">{sheet.id}</div>
                     <div className="text-xs text-muted-foreground mb-2 truncate">{sheet.client}</div>
                     <div className="flex items-center gap-4 text-[10px] font-medium">
                       <span className="font-black text-foreground">{sheet.amount}</span>

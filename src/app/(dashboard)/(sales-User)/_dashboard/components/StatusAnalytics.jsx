@@ -33,11 +33,11 @@ const StatusAnalytics = ({ breakdown }) => {
 
   if (!isMounted)
     return (
-      <div className="h-[300px] w-full animate-pulse bg-slate-100 rounded-xl" />
+      <div className="h-75 w-full animate-pulse bg-slate-100 rounded-xl" />
     );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 h-[410px] my-15">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 h-102.5 my-15">
 
       {/* Chart */}
       <Card className="lg:col-span-3 border shadow-md bg-white rounded-xl  border-gray-200 h-full flex flex-col">
@@ -58,7 +58,7 @@ const StatusAnalytics = ({ breakdown }) => {
         </CardHeader>
 
         <CardContent className="px-4 pt-2 flex-1">
-          <div className="h-[260px] w-full bg-slate-50 rounded-lg border border-gray-200 p-2">
+          <div className="h-65 w-full bg-slate-50 rounded-lg border border-gray-200 p-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}

@@ -1,196 +1,410 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
-import { Plus, Info, CalendarDays } from "lucide-react";
-import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table";
+import { Plus, Info, FileUp } from "lucide-react";
+import {
+  Table, TableBody, TableHead, TableHeader, TableRow, TableCell,
+} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LineItemRow } from "./LineItemRow";
+import { LineItemRow, calcLineItem } from "./LineItemRow";
 
-export function SummaryFooter({ displayedItems, region, activeYear, isRamped }) {
-  const isAfrica = region === "Africa";
-  if (displayedItems.length === 0) return null;
+// ─── SUMMARY FOOTER ───────────────────────────────────────────────────────────
 
-  const calculateTotal = (field) => {
-    return displayedItems.reduce((sum, item) => sum + (Number(item[field]) || 0), 0);
-  };
-  const totalQty = calculateTotal("qty");
-  const totalNet = displayedItems.reduce((sum, item) => sum + ((Number(item.unit_net_usd) || 0) * (Number(item.qty) || 0)), 0);
-  const totalErp = displayedItems.reduce((sum, item) => sum + ((Number(item.unit_erp_usd) || 0) * (Number(item.qty) || 0)), 0);
+export function SummaryFooter({ items, region, activeYear, dealType, exchangeRate = 3.6725 }) {
+  const isAfrica = region === "AFRICA";
+  const suf = activeYear === "year2" ? "_y2" : activeYear === "year3" ? "_y3" : "";
+  const valid = items.filter(i => i.part_number || i.item_name);
+
+  let totNet = 0, totErp = 0, totQty = 0, totEup = 0, totRebate = 0;
+  let totGp = 0, totSwoGp = 0, totPartnerGp = 0;
+
+  valid.forEach(item => {
+    const c = calcLineItem(item, exchangeRate, dealType, suf);
+    totNet       += c.totalNet;
+    totErp       += c.totalErp;
+    totEup       += c.totalEup;
+    totRebate    += c.rebateAmt;
+    totGp        += c.gp;
+    totSwoGp     += c.swoGp;
+    totPartnerGp += c.partnerGp;
+    totQty       += Number(item[`qty${suf}`] ?? item.qty ?? 0);
+  });
+
+  const fmt = (v) =>
+    `AED ${Number(v || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
-    <TableRow className="bg-slate-50 border-t-2 font-bold text-[10px]">
-      <TableCell colSpan={11} className="py-2 text-right text-slate-700 uppercase">
-        {isRamped ? `${activeYear.toUpperCase()} Totals:` : "Total Summary:"}
+    <TableRow className="bg-slate-100 border-t-2 border-slate-300 font-bold text-[11px]">
+      <TableCell colSpan={11} className="py-2 pr-4 text-right text-slate-600 uppercase tracking-wide text-xs">
+        TOTALS:
       </TableCell>
-      <TableCell className="bg-blue-50 text-center text-blue-800 border-x">AED {totalNet.toLocaleString()}</TableCell>
-      <TableCell className="bg-blue-50 text-center text-blue-800 border-r">AED {totalErp.toLocaleString()}</TableCell>
-      <TableCell className="text-center bg-yellow-50">{totalQty}</TableCell>
-      <TableCell></TableCell>
-      <TableCell className="bg-green-50 text-center text-green-800 border-x">AED {totalErp.toLocaleString()}</TableCell>
-      <TableCell colSpan={2} className="bg-blue-900/10"></TableCell>
-      <TableCell className="bg-blue-900/20 text-center">-</TableCell>
+      <TableCell className="bg-blue-200 text-center text-blue-900 py-2 whitespace-nowrap">{fmt(totNet)}</TableCell>
+      <TableCell className="bg-blue-200 text-center text-blue-900 py-2 whitespace-nowrap border-r">{fmt(totErp)}</TableCell>
+      <TableCell className="bg-yellow-200 text-center py-2">{totQty.toLocaleString()}</TableCell>
+      <TableCell />
+      <TableCell className="bg-green-200 text-center text-green-900 py-2 whitespace-nowrap border-x">{fmt(totEup)}</TableCell>
+      <TableCell className="bg-slate-200" />
+      <TableCell className="bg-slate-200 border-l" />
+      <TableCell className="bg-yellow-100 text-center text-yellow-800 py-2 whitespace-nowrap">{fmt(totRebate)}</TableCell>
       {isAfrica && (
-        <><TableCell colSpan={4} className="bg-purple-50 text-center">-</TableCell></>
+        <>
+          <TableCell className="bg-purple-100 text-center text-purple-800 py-2 whitespace-nowrap">{fmt(totGp)}</TableCell>
+          <TableCell className="bg-purple-200" />
+          <TableCell className="bg-purple-100 text-center text-purple-800 py-2 whitespace-nowrap">{fmt(totSwoGp)}</TableCell>
+          <TableCell className="bg-orange-100 text-center text-orange-800 py-2 whitespace-nowrap">{fmt(totPartnerGp)}</TableCell>
+        </>
       )}
-      <TableCell></TableCell>
+      <TableCell />
     </TableRow>
   );
 }
 
-export function LineItemsSection({ items, onChange, region, dealType }) {
+// ─── EMPTY ROW FACTORY ────────────────────────────────────────────────────────
+
+const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+const emptyRow = () => ({
+  id: uid(),
+  category: "Enterprise Online",
+  part_number: "", item_name: "",
+  unit_type: 12,
+
+  // FIX: swo_gp_percent — PER YEAR (3 separate fields, each default 50)
+  swo_gp_percent:    50,
+  swo_gp_percent_y2: 50,
+  swo_gp_percent_y3: 50,
+
+  qty: 0,            unit_net_usd: 0,      unit_erp_usd: 0,
+  ms_discount: 0,    crayon_markup: 0,     rebate_percent: 0,
+  qty_y2: 0,         unit_net_usd_y2: 0,   unit_erp_usd_y2: 0,
+  ms_discount_y2: 0, crayon_markup_y2: 0,  rebate_percent_y2: 0,
+  qty_y3: 0,         unit_net_usd_y3: 0,   unit_erp_usd_y3: 0,
+  ms_discount_y3: 0, crayon_markup_y3: 0,  rebate_percent_y3: 0,
+});
+
+// ─── MAIN SECTION ─────────────────────────────────────────────────────────────
+
+export function LineItemsSection({ items, onChange, region, dealType, exchangeRate = 3.6725 }) {
   const [activeYear, setActiveYear] = useState("year1");
-  const isAfrica = region === "Africa";
+  const fileInputRef = useRef(null);
+
+  const isAfrica = region === "AFRICA";
   const isRamped = dealType === "RAMPED";
 
-  // FILTER: Sirf active tab ka data dikhao!
-  const displayedItems = isRamped ? items.filter(i => i.tab_year === activeYear) : items;
+  const addRow = () => onChange([...items, emptyRow()]);
 
-  const generateUID = () => Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-
-const addRow = () => {
-    const newItem = {
-      id: generateUID(),
-      tab_year: isRamped ? activeYear : "year1",
-      category: "Enterprise Online",
-      part_number: "", item_name: "", unit_type: "12",
-      qty: 0, unit_net_usd: 0, unit_erp_usd: 0, ms_discount: 0, crayon_markup: 0, rebate_percent: 0, swo_gp_percent: 50,
-    };
-    onChange([...items, newItem]);
-  };
-
-  // ✅ FIX: Yeh useEffect add karein
   useEffect(() => {
-    // Current tab/year ka data filter karein
-    const currentYearItems = isRamped 
-      ? items.filter(i => i.tab_year === activeYear)
-      : items; // Normal mode mein saare items dekho
+    if (items.length === 0) onChange([emptyRow()]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
 
-    // Agar current view mein koi item nahi hai, toh automatically row add kardo
-    if (currentYearItems.length === 0) {
-      addRow();
-    }
-  }, [activeYear, isRamped, items.length]);
-
-  const updateItem = (id, field, value) => {
-    onChange(items.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
-  };
-
-const handleBatchPaste = (parsedItemsToMerge, currentIndex) => {
-    // 1. Pehle pure items ki copy lo
-    let allItems = [...items];
-
-    // 2. Sirf active tab ke items dhoondo taaki humein sahi 'global index' mil sake
-    // Kyunke 'currentIndex' sirf displayedItems ka index hota hai
-    const displayedItemsIds = displayedItems.map(i => i.id);
-    const targetId = displayedItemsIds[currentIndex];
-    
-    // 3. Global array mein wo index dhoondo jahan paste hua hai
-    const globalIndex = allItems.findIndex(i => i.id === targetId);
-
-    if (globalIndex !== -1) {
-      // FIX: 'globalIndex' se shuru karo, 1 item (khali row) ko delete karo, 
-      // aur uski jagah saara naya data daal do.
-      allItems.splice(globalIndex, 1, ...parsedItemsToMerge);
+  const handleBatchPaste = (parsedItems, currentIndex) => {
+    const updated = [...items];
+    if (updated[currentIndex]) {
+      updated.splice(currentIndex, 1, ...parsedItems.map((p, i) => ({
+        ...emptyRow(), ...p, id: i === 0 ? updated[currentIndex].id : uid(),
+      })));
     } else {
-      // Fallback: Agar kuch na mile toh end mein push kardo
-      allItems.push(...parsedItemsToMerge);
+      updated.push(...parsedItems.map(p => ({ ...emptyRow(), ...p, id: uid() })));
     }
+    onChange(updated);
+  };
 
-    onChange(allItems);
+  // ── EXCEL IMPORT ──────────────────────────────────────────────────────────
+  const handleExcelImport = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const wb = XLSX.read(new Uint8Array(evt.target.result), { type: "array" });
+        const ws = wb.Sheets["Costing"] || wb.Sheets[wb.SheetNames[0]];
+        if (!ws) { alert("Sheet 'Costing' not found."); return; }
+
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "", raw: false });
+
+        const pn = (v) => {
+          if (v === null || v === undefined || v === "") return 0;
+          const s = String(v).replace(/[$,\s%"']/g, "").trim();
+          const n = parseFloat(s);
+          return isNaN(n) ? 0 : n;
+        };
+
+        const pp = (v) => {
+          const str = String(v ?? "").trim();
+          const n   = pn(v);
+          if (str.includes("%")) return n;
+          if (n > 0 && n <= 1) return +(n * 100).toFixed(6);
+          return n;
+        };
+
+        const isPartNo = (v) => /^[A-Z0-9]{2,}-[A-Z0-9]+$/i.test(String(v || "").trim());
+
+        let y2HeaderRow = -1, y3HeaderRow = -1;
+        for (let i = 0; i < rows.length; i++) {
+          const text = (rows[i] || []).join(" ").toLowerCase();
+          if (y2HeaderRow < 0 && /year\s*2/.test(text) && !isPartNo(rows[i]?.[0])) y2HeaderRow = i;
+          if (y3HeaderRow < 0 && /year\s*3/.test(text) && !isPartNo(rows[i]?.[0])) y3HeaderRow = i;
+        }
+        const isRampedFile = y2HeaderRow > 0;
+
+        // FIX: parseSection now returns swo_gp_percent from col 19 per section
+        const parseSection = (startRow, endRow = rows.length) => {
+          const section = [];
+          let cat = "Enterprise Online";
+
+          for (let i = startRow; i < Math.min(endRow, rows.length); i++) {
+            const row  = rows[i] || [];
+            const col0 = String(row[0] || "").trim();
+            const col1 = String(row[1] || "").trim();
+            const text = `${col0} ${col1}`.toLowerCase();
+
+            if (!col0) {
+              if (/enterprise online/i.test(text))   cat = "Enterprise Online";
+              else if (/on.?premise/i.test(text))    cat = "Additional On Premise";
+              else if (/additional/i.test(text))     cat = "Additional";
+              continue;
+            }
+
+            if (!isPartNo(col0)) continue;
+            if (/total|grand/i.test(text)) continue;
+
+            section.push({
+              category:       cat,
+              part_number:    col0,
+              item_name:      col1.replace(/\n/g, " "),
+              unit_type:      parseInt(pn(row[7])) || 12,
+              unit_net_usd:   pn(row[2]),
+              unit_erp_usd:   pn(row[3]),
+              ms_discount:    pp(row[5]),
+              crayon_markup:  pp(row[6]),
+              qty:            parseInt(pn(row[12])) || 0,
+              rebate_percent: pp(row[16]),
+              swo_gp_percent: pp(row[19]) || 50,  // per-section value
+            });
+          }
+          return section;
+        };
+
+        const y1End = isRampedFile ? y2HeaderRow : rows.length;
+        const y2End = y3HeaderRow > 0 ? y3HeaderRow : rows.length;
+
+        const y1 = parseSection(0, y1End);
+        const y2 = isRampedFile ? parseSection(y2HeaderRow + 1, y2End) : [];
+        const y3 = isRampedFile && y3HeaderRow > 0 ? parseSection(y3HeaderRow + 1) : [];
+
+        if (y1.length === 0) {
+          alert("No valid products found.\nMake sure the sheet has part numbers like 'AAA-00000'.");
+          return;
+        }
+
+        // FIX: merge — swo_gp stored per year separately
+        const merged = {};
+        y1.forEach(it => {
+          merged[it.part_number] = {
+            ...emptyRow(),
+            category:          it.category,
+            part_number:       it.part_number,
+            item_name:         it.item_name,
+            unit_type:         it.unit_type,
+            swo_gp_percent:    it.swo_gp_percent,   // Y1
+            unit_net_usd:      it.unit_net_usd,
+            unit_erp_usd:      it.unit_erp_usd,
+            ms_discount:       it.ms_discount,
+            crayon_markup:     it.crayon_markup,
+            qty:               it.qty,
+            rebate_percent:    it.rebate_percent,
+          };
+        });
+        y2.forEach(it => {
+          const k = it.part_number;
+          if (!merged[k]) merged[k] = { ...emptyRow(), category: it.category, part_number: k, item_name: it.item_name, unit_type: it.unit_type };
+          Object.assign(merged[k], {
+            unit_net_usd_y2:   it.unit_net_usd,
+            unit_erp_usd_y2:   it.unit_erp_usd,
+            ms_discount_y2:    it.ms_discount,
+            crayon_markup_y2:  it.crayon_markup,
+            qty_y2:            it.qty,
+            rebate_percent_y2: it.rebate_percent,
+            swo_gp_percent_y2: it.swo_gp_percent,   // FIX: Y2 from its own section
+          });
+        });
+        y3.forEach(it => {
+          const k = it.part_number;
+          if (!merged[k]) merged[k] = { ...emptyRow(), category: it.category, part_number: k, item_name: it.item_name, unit_type: it.unit_type };
+          Object.assign(merged[k], {
+            unit_net_usd_y3:   it.unit_net_usd,
+            unit_erp_usd_y3:   it.unit_erp_usd,
+            ms_discount_y3:    it.ms_discount,
+            crayon_markup_y3:  it.crayon_markup,
+            qty_y3:            it.qty,
+            rebate_percent_y3: it.rebate_percent,
+            swo_gp_percent_y3: it.swo_gp_percent,   // FIX: Y3 from its own section
+          });
+        });
+
+        const final = Object.values(merged).map(it => ({ ...it, id: uid() }));
+        onChange(final);
+        alert(`✅ Imported ${final.length} products${isRampedFile ? " (Ramped 3-Year)" : ""}`);
+
+      } catch (err) {
+        console.error("Import error:", err);
+        alert("❌ Import failed: " + err.message);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+    e.target.value = null;
   };
-  // --- COPY BUTTONS LOGIC ---
-  const copyToOtherYear = (targetYear) => {
-    const year1Items = items.filter(i => i.tab_year === "year1" && i.part_number);
-    const copiedItems = year1Items.map(i => ({ ...i, id: generateUID(), tab_year: targetYear }));
-    const otherItems = items.filter(i => i.tab_year !== targetYear);
-    onChange([...otherItems, ...copiedItems]);
-  };
+
+  // ── API PAYLOAD BUILDER ───────────────────────────────────────────────────
+  LineItemsSection.buildPayload = (lineItems) =>
+    lineItems
+      .filter(i => i.part_number?.trim() || i.item_name?.trim())
+      .map(item => ({
+        part_number:  item.part_number || "N/A",
+        product_name: item.item_name   || "Unknown",
+        product_type: (() => {
+          const cat = item.category || "Enterprise Online";
+          if (/enterprise online/i.test(cat)) return "ENTERPRISE_ONLINE";
+          if (/on.?premise/i.test(cat))       return "ON_PREMISE";
+          if (/additional/i.test(cat))        return "ADDITIONAL_ONLINE";
+          return "OTHER";
+        })(),
+        unit_type: Number(item.unit_type || 12),
+
+        // Year 1
+        quantity_y1:               Number(item.qty            || 0),
+        unit_net_usd_y1:           Number(item.unit_net_usd   || 0),
+        unit_erp_usd_y1:           Number(item.unit_erp_usd   || 0),
+        ms_discount_percentage_y1: Number(item.ms_discount    || 0) / 100,
+        markup_percentage_y1:      Number(item.crayon_markup  || 0) / 100,
+        rebate_percentage_y1:      Number(item.rebate_percent || 0) / 100,
+        swo_gp_percentage_y1:      Number(item.swo_gp_percent    || 50) / 100,  // FIX: per year
+
+        // Year 2
+        quantity_y2:               Number(item.qty_y2          || 0),
+        unit_net_usd_y2:           Number(item.unit_net_usd_y2 || 0),
+        unit_erp_usd_y2:           Number(item.unit_erp_usd_y2 || 0),
+        ms_discount_percentage_y2: Number(item.ms_discount_y2  || 0) / 100,
+        markup_percentage_y2:      Number(item.crayon_markup_y2|| 0) / 100,
+        rebate_percentage_y2:      Number(item.rebate_percent_y2||0) / 100,
+        swo_gp_percentage_y2:      Number(item.swo_gp_percent_y2 || 50) / 100,  // FIX: per year
+
+        // Year 3
+        quantity_y3:               Number(item.qty_y3          || 0),
+        unit_net_usd_y3:           Number(item.unit_net_usd_y3 || 0),
+        unit_erp_usd_y3:           Number(item.unit_erp_usd_y3 || 0),
+        ms_discount_percentage_y3: Number(item.ms_discount_y3  || 0) / 100,
+        markup_percentage_y3:      Number(item.crayon_markup_y3|| 0) / 100,
+        rebate_percentage_y3:      Number(item.rebate_percent_y3||0) / 100,
+        swo_gp_percentage_y3:      Number(item.swo_gp_percent_y3 || 50) / 100,  // FIX: per year
+      }));
+
+  // ── RENDER ────────────────────────────────────────────────────────────────
+  const thCls = "text-[10px] font-bold text-center whitespace-nowrap px-2 py-2";
 
   return (
-    <div className="space-y-4 overflow-hidden bg-white p-4 rounded-xl border shadow-sm">
-      {isRamped && (
-        <div className="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-blue-100">
-          <Tabs value={activeYear} onValueChange={setActiveYear} className="w-[300px]">
-            <TabsList className="grid grid-cols-3 h-9">
-              <TabsTrigger value="year1" className="text-xs font-bold">Year 1</TabsTrigger>
-              <TabsTrigger value="year2" className="text-xs font-bold">Year 2</TabsTrigger>
-              <TabsTrigger value="year3" className="text-xs font-bold">Year 3</TabsTrigger>
-            </TabsList>
-          </Tabs>
+    <div className="space-y-3 bg-white p-4 rounded-xl border shadow-sm">
 
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => copyToOtherYear("year2")} className="h-9 text-xs text-purple-700 bg-purple-50 hover:bg-purple-100 border-purple-200">Copy to Year 2</Button>
-            <Button variant="outline" size="sm" onClick={() => copyToOtherYear("year3")} className="h-9 text-xs text-purple-700 bg-purple-50 hover:bg-purple-100 border-purple-200">Copy to Year 3</Button>
-          </div>
+      {/* Toolbar */}
+      <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-blue-100 flex-wrap gap-3">
+        <div className="flex gap-3 items-center flex-wrap">
+          {isRamped && (
+            <Tabs value={activeYear} onValueChange={setActiveYear}>
+              <TabsList className="grid grid-cols-3 h-9">
+                <TabsTrigger value="year1" className="text-xs font-bold px-4">Year 1</TabsTrigger>
+                <TabsTrigger value="year2" className="text-xs font-bold px-4">Year 2</TabsTrigger>
+                <TabsTrigger value="year3" className="text-xs font-bold px-4">Year 3</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          )}
+          <input type="file" ref={fileInputRef} onChange={handleExcelImport} accept=".xlsx,.xls" className="hidden" />
+          <Button variant="outline" size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            className="text-green-700 bg-green-50 border-green-300 gap-2 h-9 font-semibold"
+          >
+            <FileUp size={14} /> Import Excel
+          </Button>
         </div>
-      )}
-
-      <div className="bg-[#f0f7ff] border border-blue-100 p-3 rounded-lg flex flex-col gap-1 text-[#1e40af] text-sm">
-        <div className="flex items-center gap-2 mt-1 italic text-slate-600 text-xs">
-          <Info size={14} className="text-blue-500" />
-          <p>Tip: Edit <span className="font-bold uppercase text-blue-700">{activeYear}</span>. Paste Excel data into Part Number.</p>
+        <div className="text-[11px] text-slate-500 flex items-center gap-1">
+          <Info size={13} className="text-blue-400" />
+          {isRamped
+            ? <span className="font-bold text-blue-700">{activeYear.replace("year", "Year ")} active</span>
+            : <span>Normal Deal · Rate: {exchangeRate}</span>}
         </div>
       </div>
 
+      {/* Table */}
       <div className="rounded-lg border border-slate-200 overflow-x-auto">
-        <Table className={`${isAfrica ? "min-w-[2400px]" : "min-w-[2000px]"} border-collapse`}>
-          <TableHeader className="bg-slate-100/80">
+        <Table className="border-collapse" style={{ minWidth: isAfrica ? "1800px" : "1400px" }}>
+          <TableHeader className="bg-slate-700 text-white">
             <TableRow>
-              <TableHead className="text-[10px] font-bold uppercase">Category</TableHead>
-              <TableHead className="bg-[#f0fff4] text-[10px] font-bold uppercase border-x">Part Number</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase min-w-[200px]">Item Name</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center">Unit Net</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center">Unit ERP</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center">Def MU%</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center">MS Disc%</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center">Crayon MU%</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center">Type</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center">Disc Net</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center border-r">Disc ERP</TableHead>
-              <TableHead className="bg-blue-600 text-white text-[10px] text-center">Total Net</TableHead>
-              <TableHead className="bg-blue-600 text-white text-[10px] text-center border-r">Total ERP</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center bg-yellow-50">Qty</TableHead>
-              <TableHead className="text-[10px] font-bold uppercase text-center">EUP</TableHead>
-              <TableHead className="bg-green-600 text-white text-[10px] text-center border-x">Total EUP</TableHead>
-              <TableHead className="bg-blue-800 text-white text-[10px] text-center">MU %</TableHead>
-              <TableHead className="bg-blue-800 text-white text-[10px] text-center border-l">Reb %</TableHead>
-              <TableHead className="bg-blue-800 text-white text-[10px] text-center border-l">Rebate</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[170px]`}>Category</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[140px] bg-green-800`}>Part No.</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[240px] text-left`}>Item Name</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[100px]`}>Unit Net</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[100px]`}>Unit ERP</TableHead>
+              <TableHead className={`${thCls} text-slate-300 min-w-[80px] bg-slate-600`}>Def MU%</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[90px]`}>MS Disc%</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[90px]`}>Crayon MU%</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[75px]`}>Type</TableHead>
+              <TableHead className={`${thCls} text-blue-200 min-w-[95px] bg-blue-900`}>Disc Net</TableHead>
+              <TableHead className={`${thCls} text-blue-200 min-w-[95px] bg-blue-900`}>Disc ERP</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[130px] bg-blue-600`}>Total Net</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[130px] bg-blue-600`}>Total ERP</TableHead>
+              <TableHead className={`${thCls} text-yellow-200 min-w-[80px] bg-amber-700`}>Qty</TableHead>
+              <TableHead className={`${thCls} text-green-200 min-w-[95px] bg-green-800`}>EUP</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[130px] bg-green-600`}>Total EUP</TableHead>
+              <TableHead className={`${thCls} text-slate-300 min-w-[80px] bg-slate-600`}>MU%</TableHead>
+              <TableHead className={`${thCls} text-white min-w-[85px]`}>Reb%</TableHead>
+              <TableHead className={`${thCls} text-yellow-200 min-w-[120px] bg-amber-700`}>Rebate</TableHead>
               {isAfrica && (
                 <>
-                  <TableHead className="bg-purple-100 text-purple-700 font-bold text-center border-l text-[10px]">GP</TableHead>
-                  <TableHead className="bg-purple-200 text-purple-800 font-bold text-center border-l text-[10px]">SWO %</TableHead>
-                  <TableHead className="bg-purple-300 text-purple-900 text-[10px] font-bold text-center border-l">SWO GP</TableHead>
-                  <TableHead className="bg-orange-100 text-orange-700 text-[10px] font-bold text-center border-l">Part GP</TableHead>
+                  <TableHead className={`${thCls} text-purple-200 min-w-[120px] bg-purple-800`}>GP</TableHead>
+                  <TableHead className={`${thCls} text-purple-200 min-w-[80px] bg-purple-700`}>SWO%</TableHead>
+                  <TableHead className={`${thCls} text-purple-200 min-w-[120px] bg-purple-800`}>SWO GP</TableHead>
+                  <TableHead className={`${thCls} text-orange-200 min-w-[120px] bg-orange-700`}>Part GP</TableHead>
                 </>
               )}
-              <TableHead className="w-[40px]"></TableHead>
+              <TableHead className="w-10 bg-slate-700" />
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {displayedItems.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={20} className="text-center py-8 text-slate-400">No items in {activeYear}. Click Add Row or Paste Data.</TableCell>
-              </TableRow>
-            ) : (
-              displayedItems.map((item, index) => (
-                <LineItemRow 
-                  key={item.id} item={item} index={index} activeYear={activeYear} isRamped={isRamped}
-                  onUpdate={(f, v) => updateItem(item.id, f, v)}
-                  onRemove={() => onChange(items.filter(i => i.id !== item.id))}
-                  onBatchPaste={handleBatchPaste} region={region}
-                />
-              ))
-            )}
-            <SummaryFooter displayedItems={displayedItems} region={region} activeYear={activeYear} isRamped={isRamped} />
+            {items.map((item, index) => (
+              <LineItemRow
+                key={item.id}
+                item={item}
+                index={index}
+                activeYear={activeYear}
+                exchangeRate={exchangeRate}
+                dealType={dealType}
+                region={region}
+                onUpdate={(field, value) =>
+                  onChange(items.map(i => i.id === item.id ? { ...i, [field]: value } : i))
+                }
+                onRemove={() => onChange(items.filter(i => i.id !== item.id))}
+                onBatchPaste={handleBatchPaste}
+              />
+            ))}
+            <SummaryFooter
+              items={items}
+              region={region}
+              activeYear={activeYear}
+              dealType={dealType}
+              exchangeRate={exchangeRate}
+            />
           </TableBody>
         </Table>
       </div>
 
-      <div className="flex justify-between items-start pt-4">
-        <Button variant="outline" size="sm" onClick={addRow} className="text-blue-600 border-blue-200 font-bold gap-2">
-          <Plus size={16} /> Add Product Row
-        </Button>
-      </div>
+      <Button variant="outline" size="sm" onClick={addRow}
+        className="text-blue-600 border-blue-300 font-semibold gap-2"
+      >
+        <Plus size={15} /> Add Product Row
+      </Button>
     </div>
   );
 }
