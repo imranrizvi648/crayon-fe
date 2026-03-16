@@ -123,14 +123,15 @@ export function LineItemsSection({ items, onChange, region, dealType, exchangeRa
         const ws = wb.Sheets["Costing"] || wb.Sheets[wb.SheetNames[0]];
         if (!ws) { alert("Sheet 'Costing' not found."); return; }
 
-        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "", raw: false });
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "", raw: true });
 
-        const pn = (v) => {
-          if (v === null || v === undefined || v === "") return 0;
-          const s = String(v).replace(/[$,\s%"']/g, "").trim();
-          const n = parseFloat(s);
-          return isNaN(n) ? 0 : n;
-        };
+       const pn = (v) => {
+  if (v === null || v === undefined || v === "") return 0;
+  if (typeof v === "number") return +v.toFixed(10);   // ← raw numeric, just clean floating point
+  const s = String(v).replace(/[$,\s%"']/g, "").trim();
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+};
 
         const pp = (v) => {
           const str = String(v ?? "").trim();
@@ -139,6 +140,17 @@ export function LineItemsSection({ items, onChange, region, dealType, exchangeRa
           if (n > 0 && n <= 1) return +(n * 100).toFixed(6);
           return n;
         };
+// const pp = (v) => {
+//   if (typeof v === "number") {
+//     // Excel raw percent: 0.20 → 20, plain number 50 → 50
+//     return (v > 0 && v <= 1) ? +(v * 100).toFixed(6) : +v.toFixed(6);
+//   }
+//   const str = String(v ?? "").trim();
+//   const n   = pn(v);
+//   if (str.includes("%")) return n;
+//   if (n > 0 && n <= 1) return +(n * 100).toFixed(6);
+//   return n;
+// };
 
         const isPartNo = (v) => /^[A-Z0-9]{2,}-[A-Z0-9]+$/i.test(String(v || "").trim());
 

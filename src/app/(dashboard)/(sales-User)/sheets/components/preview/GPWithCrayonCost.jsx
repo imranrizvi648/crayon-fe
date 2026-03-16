@@ -1,70 +1,87 @@
-import React from 'react';
+"use client";
+import React from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
+// postman key mapping:
+//   summary.merged.gross_profit_with_rebates_and_crayon_cost.net_gp = { y1, y2, y3, "3y" }
+//   summary.merged.gross_profit_with_rebates_and_crayon_cost.overall_markup (0-1 decimal)
+
 export function GPWithCrayonCost({ sheet }) {
-  // Check if data exists
-  if (!sheet || !sheet.line_items || sheet.line_items.length === 0) return null;
+  if (!sheet || !sheet.summary) return null;
 
-  const { currency_code, summary } = sheet;
-  const calc = sheet.line_items[0].calculated;
+  const cur    = sheet.currency_code || "AED";
+  const netGp  = sheet.summary?.merged?.gross_profit_with_rebates_and_crayon_cost?.net_gp || {};
+  const markup = sheet.summary?.merged?.gross_profit_with_rebates_and_crayon_cost?.overall_markup ?? 0;
 
-  // Year 1, 2, aur 3 ka total calculate karne ke liye
-  const totalGPCostRebate = 
-    Number(calc.y1.gp_plus_cost_plus_rebate) + 
-    Number(calc.y2.gp_plus_cost_plus_rebate) + 
-    Number(calc.y3.gp_plus_cost_plus_rebate);
+  const fmt = (val) =>
+    Number(val || 0).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const pct = (val) => `${(Number(val || 0) * 100).toFixed(2)}%`;
+
+  // net_gp values can be negative — color accordingly
+  const valColor = (val) =>
+    Number(val || 0) < 0 ? "text-red-600" : "text-slate-900";
 
   return (
     <div className="w-full mt-2">
       <Accordion type="single" collapsible defaultValue="gp-crayon-cost" className="w-full">
-        <AccordionItem value="gp-crayon-cost" className="bg-white border border-[#E2E8F0] rounded-lg shadow-sm overflow-hidden border-none shadow-none">
+        <AccordionItem value="gp-crayon-cost" className="border-none shadow-none">
           <AccordionTrigger className="px-6 py-3 hover:no-underline bg-white border border-[#E2E8F0] rounded-t-lg font-bold text-[13px] text-[#1E293B]">
             Gross Profit with Rebates + Crayon Cost
           </AccordionTrigger>
-          
+
           <AccordionContent className="border border-[#E2E8F0] border-t-0 p-0 rounded-b-lg">
             <div className="bg-[#F8FAFC] flex justify-end px-6 py-2 border-b border-[#E2E8F0]">
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Values</span>
             </div>
 
             <div className="flex flex-col">
-              {/* Year 1 Row */}
+              {/* summary.merged.gross_profit_with_rebates_and_crayon_cost.net_gp.y1 */}
               <div className="flex justify-between items-center px-6 py-2.5 border-b border-[#E2E8F0] hover:bg-slate-50">
-                <span className="text-[12px] text-slate-700 font-medium">GP + Rebate + Crayon Cost Year 1</span>
-                <span className="text-[12px] font-mono text-slate-900 font-bold">
-                   {currency_code} {calc.y1.gp_plus_cost_plus_rebate}
+                <span className="text-[12px] text-slate-700 font-medium">Net GP Year 1</span>
+                <span className={`text-[12px] font-mono font-bold ${valColor(netGp.y1)}`}>
+                  {cur} {fmt(netGp.y1)}
                 </span>
               </div>
 
-              {/* Year 2 Row */}
+              {/* summary.merged.gross_profit_with_rebates_and_crayon_cost.net_gp.y2 */}
               <div className="flex justify-between items-center px-6 py-2.5 border-b border-[#E2E8F0] hover:bg-slate-50">
-                <span className="text-[12px] text-slate-700 font-medium">GP + Rebate + Crayon Cost Year 2</span>
-                <span className="text-[12px] font-mono text-slate-900 font-bold">
-                   {currency_code} {calc.y2.gp_plus_cost_plus_rebate}
+                <span className="text-[12px] text-slate-700 font-medium">Net GP Year 2</span>
+                <span className={`text-[12px] font-mono font-bold ${valColor(netGp.y2)}`}>
+                  {cur} {fmt(netGp.y2)}
                 </span>
               </div>
 
-              {/* Year 3 Row */}
+              {/* summary.merged.gross_profit_with_rebates_and_crayon_cost.net_gp.y3 */}
               <div className="flex justify-between items-center px-6 py-2.5 border-b border-[#E2E8F0] hover:bg-slate-50">
-                <span className="text-[12px] text-slate-700 font-medium">GP + Rebate + Crayon Cost Year 3</span>
-                <span className="text-[12px] font-mono text-slate-900 font-bold">
-                   {currency_code} {calc.y3.gp_plus_cost_plus_rebate}
+                <span className="text-[12px] text-slate-700 font-medium">Net GP Year 3</span>
+                <span className={`text-[12px] font-mono font-bold ${valColor(netGp.y3)}`}>
+                  {cur} {fmt(netGp.y3)}
                 </span>
               </div>
 
-              {/* Highlighted Total Row (Sum of Y1, Y2, Y3) */}
-              <div className="flex justify-between items-center px-6 py-2.5 bg-[#DCFCE7] border-y border-[#BBF7D0]">
-                <span className="text-[12px] text-green-800 font-bold">Total GP + Rebate + Crayon Cost Over 3 Years</span>
-                <span className="text-[12px] font-mono text-green-800 font-black">
-                   {currency_code} {totalGPCostRebate.toFixed(2)}
+              {/* summary.merged.gross_profit_with_rebates_and_crayon_cost.net_gp["3y"] */}
+              <div className={`flex justify-between items-center px-6 py-2.5 border-y
+                ${Number(netGp["3y"] || 0) < 0
+                  ? "bg-[#FEF2F2] border-[#FECACA]"
+                  : "bg-[#DCFCE7] border-[#BBF7D0]"}`}
+              >
+                <span className={`text-[12px] font-bold ${Number(netGp["3y"] || 0) < 0 ? "text-red-800" : "text-green-800"}`}>
+                  Total Net GP Over 3 Years
+                </span>
+                <span className={`text-[12px] font-mono font-black ${Number(netGp["3y"] || 0) < 0 ? "text-red-800" : "text-green-800"}`}>
+                  {cur} {fmt(netGp["3y"])}
                 </span>
               </div>
 
-              {/* Markup Row */}
+              {/* summary.merged.gross_profit_with_rebates_and_crayon_cost.overall_markup */}
               <div className="flex justify-between items-center px-6 py-2 bg-white">
                 <span className="text-[12px] text-slate-900 font-bold">Overall Markup %</span>
-                <span className="text-[12px] font-mono text-green-700 font-bold">
-                  {summary.margin_percentage}
+                <span className={`text-[12px] font-mono font-bold ${Number(markup || 0) < 0 ? "text-red-600" : "text-green-700"}`}>
+                  {pct(markup)}
                 </span>
               </div>
             </div>

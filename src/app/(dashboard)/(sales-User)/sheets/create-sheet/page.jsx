@@ -108,10 +108,10 @@ export default function CreateSheetPage() {
     rebate_year_2: 0,
     rebate_year_3: 0,
 
-    cif_m365e5: 0,
-    cif_m365e3: 0,
-    cif_azure: 0,
-    cif_dynamics365: 0,
+    cif_m365_e5_value: 0,
+cif_m365_e3_value: 0,
+cif_azure_value: 0,
+cif_dynamics_365_value: 0,
   });
 
   useEffect(() => {
@@ -219,6 +219,11 @@ swo_gp_percentage_y3: Number(item.swo_gp_percent_y3 || 50) / 100,
         rebate_year_1: Number(formData.rebate_year_1),
         rebate_year_2: Number(formData.rebate_year_2),
         rebate_year_3: Number(formData.rebate_year_3),
+
+cif_m365_e5_value:    Number(formData.cif_m365_e5_value    || 0),
+cif_m365_e3_value:    Number(formData.cif_m365_e3_value    || 0),
+cif_azure_value:      Number(formData.cif_azure_value      || 0),
+cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
 
         tender_cost:                         Number(formData.tender_cost),
         bid_bond_percentage:                 Number(formData.bid_bond_percent),
