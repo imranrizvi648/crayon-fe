@@ -25,7 +25,7 @@ const Navbar = ({ user, isLoading }) => {
 
   if (!mounted) {
     return (
-      <nav className="flex w-full items-center justify-between px-8 py-4 bg-background border-b border-border min-h-[73px]">
+      <nav className="flex w-full items-center justify-between px-8 py-4 bg-background border-b border-border min-h-18.25">
          <div className="flex items-center gap-4 animate-pulse">
             <div className="w-10 h-10 bg-muted rounded-lg" />
             <div className="h-4 w-24 bg-muted rounded" />
@@ -35,7 +35,7 @@ const Navbar = ({ user, isLoading }) => {
   }
 
   return (
-    <nav className="flex w-full items-center justify-between px-8 pr-10 py-3 bg-card border-b border-border shadow-sm sticky top-0 z-[100]">
+    <nav className="flex w-full items-center justify-between px-8 pr-10 py-3 bg-card border-b border-border shadow-sm sticky top-0 z-100">
       
       {/* Left Section - Logo */}
       <div className="flex items-center gap-3">
@@ -63,15 +63,15 @@ const Navbar = ({ user, isLoading }) => {
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-5">
           
-          <div className="h-8 w-[1px] bg-border hidden sm:block"></div>
+          <div className="h-8 w-px bg-border hidden sm:block"></div>
 
           {/* User Profile with Dropdown */}
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-black text-secondary leading-none  tracking-tight">
+              <p className="text-sm font-bold text-secondary leading-none  tracking-tight">
                 {isLoading ? "Loading..." : (user?.name || "User")}
               </p>
-              <p className="text-[9px] text-secondary font-black  mt-1 tracking-wider">
+              <p className="text-[9px] text-secondary font-bold  mt-1 tracking-wider">
                 {isLoading ? "Please wait" : (user?.role || "Member")}
               </p>
             </div>
@@ -80,13 +80,13 @@ const Navbar = ({ user, isLoading }) => {
               <DropdownMenuTrigger asChild>
                 <button 
                   type="button"
-                  className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-black text-xs shadow-lg  uppercase cursor-pointer  transition-all outline-none active:scale-95 group"
+                  className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold text-xs shadow-lg  uppercase cursor-pointer  transition-all outline-none active:scale-95 group"
                 >
                   <span className="group-hover:scale-110 transition-transform">{initials}</span>
                 </button>
               </DropdownMenuTrigger>
               
-              <DropdownMenuContent className="w-64 mt-2 z-[100] border-border bg-card shadow-2xl rounded-2xl" align="end">
+              <DropdownMenuContent className="w-64 mt-2 z-100 border-border bg-card shadow-2xl rounded-2xl" align="end">
                 <DropdownMenuLabel className="font-normal p-4">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-black text-secondary uppercase tracking-tight">

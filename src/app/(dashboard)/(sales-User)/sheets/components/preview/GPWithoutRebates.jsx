@@ -11,11 +11,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 export function GPWithoutRebates({ sheet }) {
   if (!sheet || !sheet.summary) return null;
 
-  const cur    = sheet.currency_code || "AED";
-  // summary.merged.gp_without_rebates_crayon_gp.crayon_gp = { y1, y2, y3, "3y" }
-  const gp     = sheet.summary?.merged?.gp_without_rebates_crayon_gp?.crayon_gp || {};
-  // summary.merged.gp_without_rebates_crayon_gp.markup_crayon_gp (0-1 decimal)
-  const markup = sheet.summary?.merged?.gp_without_rebates_crayon_gp?.markup_crayon_gp ?? 0;
+  const cur      = sheet.currency_code || "AED";
+  const isAfrica = sheet.sales_region === "AFRICA";
+
+  const gpData    = sheet.summary?.merged?.gp_without_rebates_crayon_gp || {};
+  const gp        = gpData.crayon_gp   || {};
+  const partnerGp = gpData.partner_gp  || {};
+  const markup    = gpData.markup_crayon_gp  ?? 0;
+  const partnerMu = gpData.markup_partner_gp ?? 0;
 
   const fmt = (val) =>
     Number(val || 0).toLocaleString("en-US", {
@@ -68,6 +71,47 @@ export function GPWithoutRebates({ sheet }) {
                 <span className="text-[12px] text-slate-900 font-bold">Crayon GP Markup %</span>
                 <span className="text-[12px] font-mono text-green-700 font-bold">{pct(markup)}</span>
               </div>
+
+              {/* ── PARTNER GP — only for AFRICA ── */}
+              {isAfrica && (
+                <>
+                  <div className="flex justify-between items-center px-6 py-2 bg-orange-50 border-t-2 border-orange-200">
+                    <span className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">Partner GP</span>
+                  </div>
+
+                  {/* partner_gp.y1 */}
+                  <div className="flex justify-between items-center px-6 py-2.5 border-b border-[#E2E8F0] hover:bg-slate-50">
+                    <span className="text-[12px] text-orange-700 font-medium">Partner GP Year 1</span>
+                    <span className="text-[12px] font-mono text-orange-700 font-bold">{cur} {fmt(partnerGp.y1)}</span>
+                  </div>
+
+                  {/* partner_gp.y2 */}
+                  <div className="flex justify-between items-center px-6 py-2.5 border-b border-[#E2E8F0] hover:bg-slate-50">
+                    <span className="text-[12px] text-orange-700 font-medium">Partner GP Year 2</span>
+                    <span className="text-[12px] font-mono text-orange-700 font-bold">{cur} {fmt(partnerGp.y2)}</span>
+                  </div>
+
+                  {/* partner_gp.y3 */}
+                  <div className="flex justify-between items-center px-6 py-2.5 border-b border-[#E2E8F0] hover:bg-slate-50">
+                    <span className="text-[12px] text-orange-700 font-medium">Partner GP Year 3</span>
+                    <span className="text-[12px] font-mono text-orange-700 font-bold">{cur} {fmt(partnerGp.y3)}</span>
+                  </div>
+
+                  {/* partner_gp["3y"] */}
+                  <div className="flex justify-between items-center px-6 py-2.5 bg-orange-50 border-y border-orange-200">
+                    <span className="text-[12px] text-orange-800 font-bold">Partner GP Over 3 Years</span>
+                    <span className="text-[12px] font-mono text-orange-800 font-black">{cur} {fmt(partnerGp["3y"])}</span>
+                  </div>
+
+                  {/* markup_partner_gp */}
+                  <div className="flex justify-between items-center px-6 py-2 bg-white">
+                    <span className="text-[12px] text-slate-900 font-bold">Partner GP Markup %</span>
+                    <span className={`text-[12px] font-mono font-bold ${Number(partnerMu) < 0 ? "text-red-600" : "text-orange-700"}`}>
+                      {pct(partnerMu)}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </AccordionContent>
         </AccordionItem>

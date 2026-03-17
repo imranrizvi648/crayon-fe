@@ -93,30 +93,30 @@ export function LineItemsSection({ sheet }) {
 
   // ── COLUMN DEFINITIONS ────────────────────────────────────────────────────
   const cols = [
-    { key:"category",   label:"Category",        th:"bg-slate-700", td:"",                                          w:"min-w-[120px]" },
-    { key:"part_no",    label:"Part Number",      th:"bg-green-800", td:"text-blue-600 font-semibold",               w:"min-w-[110px]" },
-    { key:"item_name",  label:"Item Name",        th:"bg-slate-700", td:"max-w-[180px] truncate",                    w:"min-w-[180px] text-left" },
-    { key:"unit_net",   label:"Unit Net USD",     th:"bg-slate-700", td:"text-right",                                w:"min-w-[90px]" },
-    { key:"unit_erp",   label:"Unit ERP USD",     th:"bg-slate-700", td:"text-right",                                w:"min-w-[90px]" },
-    { key:"def_mu",     label:"Default Markup %", th:"bg-slate-600", td:"text-right text-slate-500",                 w:"min-w-[85px]" },
-    { key:"ms_disc",    label:"MS Discount %",    th:"bg-slate-700", td:"text-right",                                w:"min-w-[80px]" },
-    { key:"crayon_mu",  label:"Crayon Markup %",  th:"bg-slate-700", td:"text-right",                                w:"min-w-[90px]" },
-    { key:"unit_type",  label:"Unit Type",        th:"bg-slate-700", td:"text-center",                               w:"min-w-[60px]" },
-    { key:"disc_net",   label:"MS Disc Net",      th:"bg-blue-900",  td:"text-right text-blue-600",                  w:"min-w-[85px]" },
-    { key:"disc_erp",   label:"MS Disc ERP",      th:"bg-blue-900",  td:"text-right text-blue-600",                  w:"min-w-[85px]" },
-    { key:"total_net",  label:"Total Net",        th:"bg-blue-700",  td:"text-right font-bold bg-blue-50/60",        w:"min-w-[130px]" },
-    { key:"total_erp",  label:"Total ERP",        th:"bg-blue-700",  td:"text-right font-bold bg-blue-50/60",        w:"min-w-[130px]" },
-    { key:"qty",        label:"Qty",              th:"bg-amber-700", td:"text-center font-bold bg-yellow-50/50",     w:"min-w-[60px]" },
-    { key:"eup_unit",   label:"EUP",              th:"bg-green-800", td:"text-right text-green-700",                 w:"min-w-[80px]" },
-    { key:"total_eup",  label:"Total EUP/Yr",     th:"bg-green-700", td:"text-right font-bold text-green-900 bg-green-50/60", w:"min-w-[130px]" },
-    { key:"actual_mu",  label:"Markup %",         th:"bg-slate-600", td:"text-right text-slate-500",                 w:"min-w-[70px]" },
-    { key:"rebate_pct", label:"Rebate %",         th:"bg-slate-700", td:"text-right",                                w:"min-w-[70px]" },
-    { key:"rebate_amt", label:"Rebate",           th:"bg-amber-700", td:"text-right text-yellow-800 bg-yellow-50/40",w:"min-w-[110px]" },
+    { key:"category",   label:"Category",        th:"bg-secondary", td:"",                                          w:"min-w-[120px]" },
+    { key:"part_no",    label:"Part Number",      th:"bg-secondary", td:"text-blue-600 font-semibold",               w:"min-w-[110px]" },
+    { key:"item_name",  label:"Item Name",        th:"bg-secondary", td:"max-w-[180px] truncate",                    w:"min-w-[180px] text-left" },
+    { key:"unit_net",   label:"Unit Net USD",     th:"bg-secondary", td:"text-right",                                w:"min-w-[90px]" },
+    { key:"unit_erp",   label:"Unit ERP USD",     th:"bg-secondary", td:"text-right",                                w:"min-w-[90px]" },
+    { key:"def_mu",     label:"Default Markup %", th:"bg-secondary", td:"text-right text-slate-500",                 w:"min-w-[85px]" },
+    { key:"ms_disc",    label:"MS Discount %",    th:"bg-secondary", td:"text-right",                                w:"min-w-[80px]" },
+    { key:"crayon_mu",  label:"Crayon Markup %",  th:"bg-secondary", td:"text-right",                                w:"min-w-[90px]" },
+    { key:"unit_type",  label:"Unit Type",        th:"bg-secondary", td:"text-center",                               w:"min-w-[60px]" },
+    { key:"disc_net",   label:"MS Disc Net",      th:"bg-secondary",  td:"text-right text-blue-600",                  w:"min-w-[85px]" },
+    { key:"disc_erp",   label:"MS Disc ERP",      th:"bg-secondary",  td:"text-right text-blue-600",                  w:"min-w-[85px]" },
+    { key:"total_net",  label:"Total Net",        th:"bg-secondary",  td:"text-right font-bold bg-blue-50/60",        w:"min-w-[130px]" },
+    { key:"total_erp",  label:"Total ERP",        th:"bg-secondary",  td:"text-right font-bold bg-blue-50/60",        w:"min-w-[130px]" },
+    { key:"qty",        label:"Qty",              th:"bg-secondary", td:"text-center font-bold bg-yellow-50/50",     w:"min-w-[60px]" },
+    { key:"eup_unit",   label:"EUP",              th:"bg-secondary", td:"text-right text-green-700",                 w:"min-w-[80px]" },
+    { key:"total_eup",  label:"Total EUP/Yr",     th:"bg-secondary", td:"text-right font-bold text-green-900 bg-green-50/60", w:"min-w-[130px]" },
+    { key:"actual_mu",  label:"Markup %",         th:"bg-secondary", td:"text-right text-slate-500",                 w:"min-w-[70px]" },
+    { key:"rebate_pct", label:"Rebate %",         th:"bg-secondary", td:"text-right",                                w:"min-w-[70px]" },
+    { key:"rebate_amt", label:"Rebate",           th:"bg-secondary", td:"text-right text-yellow-800 bg-yellow-50/40",w:"min-w-[110px]" },
     ...(isAfrica ? [
-      { key:"gp",         label:"GP",             th:"bg-purple-800", td:"text-right text-purple-800 bg-purple-50/40", w:"min-w-[110px]" },
-      { key:"swo_pct",    label:"SWO GP %",       th:"bg-purple-700", td:"text-right text-purple-700",                w:"min-w-[70px]" },
-      { key:"swo_gp",     label:"SWO GP",         th:"bg-purple-800", td:"text-right text-purple-800 bg-purple-50/40", w:"min-w-[110px]" },
-      { key:"partner_gp", label:"Partner GP",     th:"bg-orange-700", td:"text-right text-orange-800 bg-orange-50/40", w:"min-w-[110px]" },
+      { key:"gp",         label:"GP",             th:"bg-secondary", td:"text-right text-purple-800 bg-purple-50/40", w:"min-w-[110px]" },
+      { key:"swo_pct",    label:"SWO GP %",       th:"bg-secondary", td:"text-right text-purple-700",                w:"min-w-[70px]" },
+      { key:"swo_gp",     label:"SWO GP",         th:"bg-secondary", td:"text-right text-purple-800 bg-purple-50/40", w:"min-w-[110px]" },
+      { key:"partner_gp", label:"Partner GP",     th:"bg-secondary", td:"text-right text-orange-800 bg-orange-50/40", w:"min-w-[110px]" },
     ] : []),
   ];
 
@@ -162,7 +162,7 @@ export function LineItemsSection({ sheet }) {
 
       {/* ── TOOLBAR ── */}
       <div className="bg-[#EFF6FF] border-b border-[#DBEAFE] px-4 py-2 flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2 text-[#2563EB] text-[11px] font-medium">
+        <div className="flex items-center gap-2 text-secondary text-[11px] font-medium">
           <Info size={13} />
           <span>
             {isRamped ? "Ramped Deal" : "Normal Deal"}
@@ -175,7 +175,7 @@ export function LineItemsSection({ sheet }) {
               <button key={y} onClick={() => setActiveYear(y)}
                 className={`px-4 py-1.5 text-[11px] font-bold rounded transition-all ${
                   activeYear === y
-                    ? "bg-blue-600 text-white shadow"
+                    ? "bg-secondary text-white shadow"
                     : "bg-white text-slate-500 border border-slate-200 hover:bg-slate-50"
                 }`}>
                 Year {i + 1}
@@ -194,8 +194,8 @@ export function LineItemsSection({ sheet }) {
             <tr>
               {cols.map(c => (
                 <th key={c.key}
-                  className={`${c.w} ${c.th} px-2 py-2.5 text-[10px] font-bold text-white
-                    uppercase tracking-tight whitespace-nowrap border-r border-white/10 text-right
+                  className={`${c.w} ${c.th} px-2 py-4 text-[11px] font-bold text-white
+                     whitespace-nowrap border-r border-white/10 text-right
                     first:text-left`}
                 >
                   {c.label}
@@ -239,7 +239,7 @@ export function LineItemsSection({ sheet }) {
             </tr>
 
             {/* Total over 3 Years Row */}
-            <tr className="bg-blue-900 text-white text-[11px] font-bold">
+            <tr className="bg-secondary text-white text-[11px] font-bold">
               <td colSpan={netIdx}
                 className="px-3 py-2 text-right uppercase text-[10px] tracking-widest whitespace-nowrap">
                 Total over 3 Years:
@@ -266,18 +266,18 @@ export function LineItemsSection({ sheet }) {
           ].map(r => (
             <div key={r.label} className="flex justify-between items-center px-4 py-2 border border-[#E2E8F0] rounded-md bg-white">
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{r.label}</span>
-              <span className="text-[12px] font-black text-green-600">{currency} {fmtNum(r.val)}</span>
+              <span className="text-[12px] font-black text-foreground">{currency} {fmtNum(r.val)}</span>
             </div>
           ))}
 
           <div className="flex justify-between items-center px-4 py-2 border border-green-300 rounded-md bg-green-50">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Profit /3Years</span>
-            <span className="text-[13px] font-black text-green-700">{currency} {fmtNum(gp3Y)}</span>
+            <span className="text-[13px] font-black text-foreground">{currency} {fmtNum(gp3Y)}</span>
           </div>
 
           <div className="flex justify-between items-center px-4 py-2 border border-[#E2E8F0] rounded-md bg-white">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Overall Margin</span>
-            <span className="text-[13px] font-black text-green-600">{fmtPct(margin)}</span>
+            <span className="text-[13px] font-bold text-foreground">{fmtPct(margin)}</span>
           </div>
 
           {isAfrica && (

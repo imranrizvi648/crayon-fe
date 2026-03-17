@@ -36,7 +36,7 @@ export default function CreateSheetPage() {
     opportunity_id: "",
 
     customer_segment: "ENTERPRISE",
-    business_area: "",
+    business_area: "UAE",
 
     // Backend enum: UAE | KSA | AFRICA | GLOBAL
     region: "UAE",
@@ -65,7 +65,7 @@ export default function CreateSheetPage() {
         category: "Enterprise Online",
         part_number: "",
         item_name: "",
-        unit_type: 12,
+        unit_type: 0,
 
         qty: 0,
         unit_net_usd: 0,
@@ -88,7 +88,7 @@ export default function CreateSheetPage() {
         crayon_markup_y3: 0,
         rebate_percent_y3: 0,
 
-        swo_gp_percent: 50,
+        swo_gp_percent: 0,
       },
     ],
 
@@ -97,10 +97,10 @@ export default function CreateSheetPage() {
     discount_year_3: 0,
 
     bid_bond_percent: 0,
-    bank_charges_percent: 3,
+    bank_charges_percent: 0,
 
     performance_bond_percent: 0,
-    performance_bank_charges_percent: 1,
+   performance_bank_charges_percent: 0,
 
     tender_cost: 0,
 
@@ -109,9 +109,9 @@ export default function CreateSheetPage() {
     rebate_year_3: 0,
 
     cif_m365_e5_value: 0,
-cif_m365_e3_value: 0,
-cif_azure_value: 0,
-cif_dynamics_365_value: 0,
+    cif_m365_e3_value: 0,
+    cif_azure_value: 0,
+    cif_dynamics_365_value: 0,
   });
 
   useEffect(() => {
@@ -135,7 +135,7 @@ cif_dynamics_365_value: 0,
     }
 
     const validLineItems = formData.line_items.filter(
-      (item) => item.part_number?.trim() || item.item_name?.trim()
+      (item) => item.part_number?.trim() || item.item_name?.trim(),
     );
 
     if (validLineItems.length === 0) {
@@ -147,53 +147,52 @@ cif_dynamics_365_value: 0,
 
     try {
       const formattedLineItems = validLineItems.map((item) => ({
-        part_number:   item.part_number || "N/A",
-        product_name:  item.item_name   || "Unknown Product",
-product_type: (() => {
-  const cat = item.category || "Enterprise Online";
-  if (/enterprise online/i.test(cat))  return "ENTERPRISE_ONLINE";
-  if (/on.?premise/i.test(cat))        return "ON_PREMISE";
-  if (/additional/i.test(cat))         return "ADDITIONAL_ONLINE";
-  return "OTHER";
-})(),
-        unit_type:     Number(item.unit_type || 12),
+        part_number: item.part_number || "N/A",
+        product_name: item.item_name || "Unknown Product",
+        product_type: (() => {
+          const cat = item.category || "Enterprise Online";
+          if (/enterprise online/i.test(cat)) return "ENTERPRISE_ONLINE";
+          if (/on.?premise/i.test(cat)) return "ON_PREMISE";
+          if (/additional/i.test(cat)) return "ADDITIONAL_ONLINE";
+          return "OTHER";
+        })(),
+        unit_type: Number(item.unit_type || 0),
 
-        quantity_y1:               Number(item.qty            || 0),
-        unit_net_usd_y1:           Number(item.unit_net_usd   || 0),
-        unit_erp_usd_y1:           Number(item.unit_erp_usd   || 0),
-        ms_discount_percentage_y1: Number(item.ms_discount    || 0) / 100,
-        markup_percentage_y1:      Number(item.crayon_markup  || 0) / 100,
-        rebate_percentage_y1:      Number(item.rebate_percent || 0) / 100,
+        quantity_y1: Number(item.qty || 0),
+        unit_net_usd_y1: Number(item.unit_net_usd || 0),
+        unit_erp_usd_y1: Number(item.unit_erp_usd || 0),
+        ms_discount_percentage_y1: Number(item.ms_discount || 0) / 100,
+        markup_percentage_y1: Number(item.crayon_markup || 0) / 100,
+        rebate_percentage_y1: Number(item.rebate_percent || 0) / 100,
 
-        quantity_y2:               Number(item.qty_y2          || 0),
-        unit_net_usd_y2:           Number(item.unit_net_usd_y2 || 0),
-        unit_erp_usd_y2:           Number(item.unit_erp_usd_y2 || 0),
-        ms_discount_percentage_y2: Number(item.ms_discount_y2  || 0) / 100,
-        markup_percentage_y2:      Number(item.crayon_markup_y2|| 0) / 100,
-        rebate_percentage_y2:      Number(item.rebate_percent_y2||0) / 100,
+        quantity_y2: Number(item.qty_y2 || 0),
+        unit_net_usd_y2: Number(item.unit_net_usd_y2 || 0),
+        unit_erp_usd_y2: Number(item.unit_erp_usd_y2 || 0),
+        ms_discount_percentage_y2: Number(item.ms_discount_y2 || 0) / 100,
+        markup_percentage_y2: Number(item.crayon_markup_y2 || 0) / 100,
+        rebate_percentage_y2: Number(item.rebate_percent_y2 || 0) / 100,
 
-        quantity_y3:               Number(item.qty_y3          || 0),
-        unit_net_usd_y3:           Number(item.unit_net_usd_y3 || 0),
-        unit_erp_usd_y3:           Number(item.unit_erp_usd_y3 || 0),
-        ms_discount_percentage_y3: Number(item.ms_discount_y3  || 0) / 100,
-        markup_percentage_y3:      Number(item.crayon_markup_y3|| 0) / 100,
-        rebate_percentage_y3:      Number(item.rebate_percent_y3||0) / 100,
+        quantity_y3: Number(item.qty_y3 || 0),
+        unit_net_usd_y3: Number(item.unit_net_usd_y3 || 0),
+        unit_erp_usd_y3: Number(item.unit_erp_usd_y3 || 0),
+        ms_discount_percentage_y3: Number(item.ms_discount_y3 || 0) / 100,
+        markup_percentage_y3: Number(item.crayon_markup_y3 || 0) / 100,
+        rebate_percentage_y3: Number(item.rebate_percent_y3 || 0) / 100,
 
         // BAAD
-swo_gp_percentage_y1: Number(item.swo_gp_percent    || 50) / 100,
-swo_gp_percentage_y2: Number(item.swo_gp_percent_y2 || 50) / 100,
-swo_gp_percentage_y3: Number(item.swo_gp_percent_y3 || 50) / 100,
-
+      swo_gp_percentage_y1: Number(item.swo_gp_percent    || 0) / 100,
+swo_gp_percentage_y2: Number(item.swo_gp_percent_y2 || 0) / 100,
+swo_gp_percentage_y3: Number(item.swo_gp_percent_y3 || 0) / 100,
       }));
 
       const payload = {
         template_type: "FEWA",
 
-        customer_id:      Number(formData.customer_id),
+        customer_id: Number(formData.customer_id),
         opportunity_name: formData.customer_name || "New Opportunity",
-        opportunity_id:   formData.opportunity_id || "OPP-DEFAULT",
-        agreement_type:   "ENTERPRISE_ENROLLMENT",
-        partner_id:       1,
+        opportunity_id: formData.opportunity_id || "OPP-DEFAULT",
+        agreement_type: "ENTERPRISE_ENROLLMENT",
+        partner_id: 1,
 
         new_or_renewal: formData.new_renewal?.toUpperCase() || "RENEWAL",
         sales_location: formData.sales_location || "Dubai",
@@ -203,13 +202,13 @@ swo_gp_percentage_y3: Number(item.swo_gp_percent_y3 || 50) / 100,
 
         currency_code: formData.currency || "AED",
         exchange_rate: Number(formData.exchange_rate),
-        vat_rate:      Number(formData.vat_percent) / 100,
+        vat_rate: Number(formData.vat_percent) / 100,
 
         customer_segment: formData.customer_segment,
-        deal_type:        formData.deal_type,
+        deal_type: formData.deal_type,
 
-        agreement_level_system:      formData.agreement_level_system,
-        agreement_level_server:      formData.agreement_level_server,
+        agreement_level_system: formData.agreement_level_system,
+        agreement_level_server: formData.agreement_level_server,
         agreement_level_application: formData.agreement_level_application,
 
         discount_year_1: Number(formData.discount_year_1),
@@ -220,15 +219,15 @@ swo_gp_percentage_y3: Number(item.swo_gp_percent_y3 || 50) / 100,
         rebate_year_2: Number(formData.rebate_year_2),
         rebate_year_3: Number(formData.rebate_year_3),
 
-cif_m365_e5_value:    Number(formData.cif_m365_e5_value    || 0),
-cif_m365_e3_value:    Number(formData.cif_m365_e3_value    || 0),
-cif_azure_value:      Number(formData.cif_azure_value      || 0),
-cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
+        cif_m365_e5_value: Number(formData.cif_m365_e5_value || 0),
+        cif_m365_e3_value: Number(formData.cif_m365_e3_value || 0),
+        cif_azure_value: Number(formData.cif_azure_value || 0),
+        cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
 
-        tender_cost:                         Number(formData.tender_cost),
-        bid_bond_percentage:                 Number(formData.bid_bond_percent),
-        bank_charges_percentage:             Number(formData.bank_charges_percent),
-        performance_bond_percentage:         Number(formData.performance_bond_percent),
+        tender_cost: Number(formData.tender_cost),
+        bid_bond_percentage: Number(formData.bid_bond_percent),
+        bank_charges_percentage: Number(formData.bank_charges_percent),
+        performance_bond_percentage: Number(formData.performance_bond_percent),
         performance_bank_charges_percentage: Number(formData.performance_bank_charges_percent),
 
         line_items: formattedLineItems,
@@ -251,16 +250,25 @@ cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
   return (
     <div className="min-h-screen bg-slate-50/50 px-5 py-6">
       <div className="max-w-7xl mx-auto space-y-6">
-
         {/* Header */}
         <div className="flex justify-between items-center">
-          <Button variant="ghost" onClick={() => router.back()} disabled={isSubmitting}>
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            disabled={isSubmitting}
+          >
             <ArrowLeft size={16} className="mr-2" /> Back
           </Button>
-          <Button className="bg-primary px-6" onClick={handleSave} disabled={isSubmitting}>
-            {isSubmitting
-              ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              : <Save size={16} className="mr-2" />}
+          <Button
+            className="bg-primary px-6"
+            onClick={handleSave}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Save size={16} className="mr-2" />
+            )}
             {isSubmitting ? "Saving..." : "Save Sheet"}
           </Button>
         </div>
@@ -271,7 +279,10 @@ cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
           className="space-y-4"
         >
           {/* Customer Details */}
-          <AccordionItem value="customer" className="bg-white border rounded shadow-sm">
+          <AccordionItem
+            value="customer"
+            className="bg-white border rounded shadow-sm"
+          >
             <AccordionTrigger className="px-6 py-4 font-semibold">
               Customer & Agreement Details
             </AccordionTrigger>
@@ -281,7 +292,10 @@ cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
           </AccordionItem>
 
           {/* Line Items */}
-          <AccordionItem value="line-items" className="bg-white border rounded shadow-sm">
+          <AccordionItem
+            value="line-items"
+            className="bg-white border rounded shadow-sm"
+          >
             <AccordionTrigger className="px-6 py-4 font-semibold">
               Line Items
             </AccordionTrigger>
@@ -297,7 +311,10 @@ cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
           </AccordionItem>
 
           {/* Crayon Discounts */}
-          <AccordionItem value="crayon-discount" className="bg-white border rounded shadow-sm">
+          <AccordionItem
+            value="crayon-discount"
+            className="bg-white border rounded shadow-sm"
+          >
             <AccordionTrigger className="px-6 py-4 font-semibold">
               Crayon Discounts (%)
             </AccordionTrigger>
@@ -307,7 +324,10 @@ cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
           </AccordionItem>
 
           {/* Bid Bond */}
-          <AccordionItem value="bid-bond" className="bg-white border rounded shadow-sm">
+          <AccordionItem
+            value="bid-bond"
+            className="bg-white border rounded shadow-sm"
+          >
             <AccordionTrigger className="px-6 py-4 font-semibold">
               Bid Bond & Performance Details
             </AccordionTrigger>
@@ -317,7 +337,10 @@ cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
           </AccordionItem>
 
           {/* LSP Rebate */}
-          <AccordionItem value="lsp-rebate" className="bg-white border rounded shadow-sm">
+          <AccordionItem
+            value="lsp-rebate"
+            className="bg-white border rounded shadow-sm"
+          >
             <AccordionTrigger className="px-6 py-4 font-semibold">
               Other LSP Rebates
             </AccordionTrigger>
@@ -327,7 +350,10 @@ cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
           </AccordionItem>
 
           {/* CIF Products */}
-          <AccordionItem value="cif-products" className="bg-white border rounded shadow-sm">
+          <AccordionItem
+            value="cif-products"
+            className="bg-white border rounded shadow-sm"
+          >
             <AccordionTrigger className="px-6 py-4 font-semibold">
               CIF Products (Investment)
             </AccordionTrigger>
@@ -336,7 +362,6 @@ cif_dynamics_365_value: Number(formData.cif_dynamics_365_value || 0),
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-
       </div>
     </div>
   );

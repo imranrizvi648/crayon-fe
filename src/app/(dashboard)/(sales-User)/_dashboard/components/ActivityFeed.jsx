@@ -23,10 +23,10 @@ export default function ActivityFeed({ activities }) {
   return (
     // Card se min-h-[500px] hata kar height ko natural rakha hai
     <Card className="shadow-md overflow-hidden flex flex-col bg-card">
-      <CardHeader className="border-b py-4 px-6 shrink-0 bg-background">
-        <CardTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
+      <CardHeader className="border-b py-2 px-6 shrink-0 bg-background">
+        <CardTitle className="text-lg font-bold flex items-center gap-2  ">
           <RefreshCw className="text-primary animate-spin-slow" size={20} /> 
-          <span className="tracking-tight">Recent Activity</span>
+          <span className="tracking-wider text-lg font-bold">Recent Activity</span>
         </CardTitle>
       </CardHeader>
       

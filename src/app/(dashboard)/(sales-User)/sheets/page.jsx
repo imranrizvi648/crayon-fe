@@ -101,9 +101,9 @@ export default function CostingSheetsList() {
         {/* Navigation to Create Page */}
         <Link href="/sheets/create-sheet">
           <Button 
-            className="bg-primary hover:bg-primary/90 text-white rounded-lg shadow-primary/20 px-8 py-5 pr-13 font-bold tracking-wider cursor-pointer"
+            className="bg-primary hover:bg-primary/90 text-white rounded shadow-primary/20 px-7 py-4 pr-13 font-bold tracking-wider cursor-pointer"
           >
-            <Plus size={20} className="mr-2" /> New Sheet
+            <Plus size={15} className="mr-2" /> New Sheet
           </Button>
         </Link>
       </div>
@@ -155,7 +155,7 @@ export default function CostingSheetsList() {
       </div>
 
       {/* Main Table Container */}
-      <div className="bg-card rounded-2xl shadow-xl shadow-secondary/5 border border-border overflow-hidden">
+      <div className="">
         <SheetTable 
           items={data.items} 
           loading={loading} 

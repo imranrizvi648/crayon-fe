@@ -35,7 +35,7 @@ export const useDashboard = () => {
       // Ab baaki APIs call karein user ID ke sath
       const [summaryRes, sheetsRes, activityRes] = await Promise.all([
         api.get(ENDPOINTS.DASHBOARD.DASHBOARD_SUMMARY),
-        api.get(ENDPOINTS.DASHBOARD.RECENT_SHEETS, { params: { page, limit: 5 } }),
+        api.get(ENDPOINTS.DASHBOARD.RECENT_SHEETS, { params: { page, limit: 6 } }),
         api.get(ENDPOINTS.DASHBOARD.USER_ACTIVITY(userId, 30)) // ✅ Update kiya: userId use kiya, 30 days tak
       ]);
       
@@ -83,7 +83,7 @@ export const useDashboard = () => {
         })),
         pagination: { 
           page: page,
-          limit: 5,
+          limit: 6,
           total: apiTotal 
         }
       }));

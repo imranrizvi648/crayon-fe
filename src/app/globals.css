@@ -5,13 +5,21 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Brand colors mapping from image */
-  --color-primary: #FF370F;   /* Scarlet */
-  --color-secondary: #27455c; /* Deep Blue */
-  --color-background: #ffffff;
-  --color-foreground: #333333; /* Dark Gray */
-  --radius: 0.5rem;
+--primary: #FF370F;
+    --primary-foreground: #ffffff;
+    
+    --secondary: #27455c;
+    --secondary-foreground: #ffffff;
 
+    --background: #ffffff;
+    --foreground: #333333; /* Your Dark Gray */
+    
+    /* Muted states for the "Shallow" look */
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+
+    --border: #e2e8f0;
+    --radius: 0.5rem;
   /* Light Mode Variables (Converted to OKLCH) */
   --background: oklch(1 0 0);
    --sidebar: oklab(37.767% -0.0243 -0.04769);

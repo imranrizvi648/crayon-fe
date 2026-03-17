@@ -30,7 +30,7 @@ export default function ProductCatalogPage() {
           />
         </div>
         <Select defaultValue="all">
-          <SelectTrigger className="w-[200px] bg-white border-slate-200">
+          <SelectTrigger className="w-50 bg-white border-slate-200">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>

@@ -54,7 +54,7 @@ export default function CustomersPage() {
       </div>
 
       {/* Table Section */}
-      <div className="bg-card rounded-2xl shadow-xl shadow-secondary/5 border border-border overflow-hidden">
+      <div className="">
         <CustomerTable 
           items={customers} 
           loading={loading} 
@@ -75,11 +75,11 @@ function StatCard({ title, value, label, icon, variant }) {
   };
 
   return (
-    <div className="bg-card p-6 rounded-sm shadow-sm border border-border flex justify-between items-center group hover:border-primary/20 transition-all duration-300">
+    <div className="bg-card p-6 rounded-lg shadow-sm border border-border flex justify-between items-center group hover:border-primary/20 transition-all duration-300">
       <div className="space-y-1">
         <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.15em]">{title}</p>
         <div className="flex items-baseline gap-2">
-          <h3 className="text-2xl font-extrabold text-foreground ">{value}</h3>
+          <h3 className="text-xl font-extrabold text-foreground ">{value}</h3>
           <TrendingUp size={14} className="text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
         <p className="text-[10px] text-secondary font-bold uppercase tracking-tighter opacity-70">
