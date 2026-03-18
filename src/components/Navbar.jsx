@@ -35,7 +35,7 @@ const Navbar = ({ user, isLoading }) => {
   }
 
   return (
-    <nav className="flex w-full items-center justify-between px-8 pr-10 py-3 bg-card border-b border-border shadow-sm sticky top-0 z-100">
+    <nav className="flex w-full items-center justify-between px-8 pr-10 py-2 bg-card border-b border-border shadow-sm sticky top-0 z-100">
       
       {/* Left Section - Logo */}
       <div className="flex items-center gap-3">

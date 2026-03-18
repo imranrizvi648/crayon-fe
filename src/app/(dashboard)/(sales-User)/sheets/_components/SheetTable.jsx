@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FileText, ChevronLeft, ChevronRight, Eye, Calendar, Download, CircleDollarSign } from "lucide-react";
+import { FileText, ChevronLeft, ChevronRight, Eye,Pencil, Calendar, Download, CircleDollarSign } from "lucide-react";
 import { useRouter } from "next/navigation";
+
 
 // --- SKELETON ROW COMPONENT ---
 const TableRowSkeleton = () => (
@@ -82,6 +83,12 @@ export function SheetTable({ items, loading, onExport, pagination, onPageChange 
           <div className="flex items-center justify-end gap-4 ">
             {getStatusBadge(sheet.status)}
             <div className="flex items-center gap-1">
+              <Link href={`/sheets/edit/${sheet.id}`}>
+  <Button variant="ghost" size="icon" className="h-8 w-8 text-secondary/60 hover:text-secondary hover:bg-secondary/5">
+    <Pencil size={16} />
+  </Button>
+</Link>
+              
               <Button 
                 variant="ghost" 
                 size="icon" 

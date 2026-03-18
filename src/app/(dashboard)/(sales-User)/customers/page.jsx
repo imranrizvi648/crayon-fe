@@ -1,7 +1,7 @@
 "use client";
 
-import { useCustomers } from "./hooks/useCustomers";
-import { CustomerTable } from "./components/CustomerTable";
+import { useCustomers } from "./_hooks/useCustomers";
+import { CustomerTable } from "./_components/CustomerTable";
 import { Button } from "@/components/ui/button";
 import { UserPlus, Users, DollarSign, FileText, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";

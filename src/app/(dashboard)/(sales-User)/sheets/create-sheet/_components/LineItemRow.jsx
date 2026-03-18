@@ -263,7 +263,7 @@ export function LineItemRow({
   const calcCell = "text-[11px] text-center font-mono whitespace-nowrap px-2";
 
   return (
-    <TableRow className="hover:bg-blue-50/20 border-b border-slate-200">
+    <TableRow className="hover:bg-muted/30 border-b border-border">
       {/* Category */}
       <TableCell className="min-w-42.5 px-1 py-1">
         <Select
@@ -284,9 +284,9 @@ export function LineItemRow({
       </TableCell>
 
       {/* Part Number – paste target */}
-      <TableCell className="min-w-35 px-1 py-1 bg-green-50/40">
+      <TableCell className="min-w-35 px-1 py-1 bg-primary/5">
         <Input
-          className={`${inputCls} border-green-300`}
+          className={`${inputCls} border-primary/30`}
           value={item.part_number || ""}
           onChange={(e) => onUpdate("part_number", e.target.value)}
           onPaste={handlePaste}
@@ -332,7 +332,7 @@ export function LineItemRow({
 
       {/* Default Markup % – read-only */}
       <TableCell
-        className={`min-w-20 ${calcCell} bg-slate-50 text-slate-500`}
+        className={`min-w-20 ${calcCell}  bg-muted text-muted-foreground`}
       >
         {calc.defaultMarkup.toFixed(2)}%
       </TableCell>
@@ -383,36 +383,36 @@ export function LineItemRow({
 
       {/* MS Disc Net – calc */}
       <TableCell
-        className={`min-w-23.75 ${calcCell} bg-blue-50/40 text-blue-700`}
+        className={`min-w-23.75 ${calcCell} bg-secondary/5 text-secondary`}
       >
         {calc.msDiscNet.toFixed(3)}
       </TableCell>
 
       {/* MS Disc ERP – calc */}
       <TableCell
-        className={`min-w-23.75 ${calcCell} bg-blue-50/40 text-blue-700 border-r`}
+        className={`min-w-23.75 ${calcCell} bg-secondary/5 text-secondary border-r`}
       >
         {calc.msDiscErp.toFixed(2)}
       </TableCell>
 
       {/* Total Net – calc */}
       <TableCell
-        className={`min-w-32.5 ${calcCell} bg-blue-100/60 font-bold text-slate-800`}
+        className={`min-w-32.5 ${calcCell} bg-secondary/10 font-bold text-foreground`}
       >
         {fmtAED(calc.totalNet)}
       </TableCell>
 
       {/* Total ERP – calc */}
       <TableCell
-        className={`min-w-32.5 ${calcCell} bg-blue-100/60 font-bold text-slate-800 border-r`}
+        className={`min-w-32.5 ${calcCell} bg-secondary/10 font-bold text-foreground border-r`}
       >
         {fmtAED(calc.totalErp)}
       </TableCell>
 
       {/* Qty */}
-      <TableCell className="min-w-20 px-1 py-1 bg-yellow-50/60">
+      <TableCell className="min-w-20 px-1 py-1 bg-muted">
         <Input
-          className="h-9 text-[11px] text-center font-bold w-full border-yellow-300"
+          className="h-9 text-[11px] text-center font-bold w-full border-border"
           inputMode="numeric"
           value={yv("qty")}
           onChange={(e) => onUpdate(yf("qty"), parseInt(e.target.value) || 0)}
@@ -420,20 +420,20 @@ export function LineItemRow({
       </TableCell>
 
       {/* EUP unit – calc */}
-      <TableCell className={`min-w-23.75 ${calcCell} text-green-700`}>
+      <TableCell className={`min-w-23.75 ${calcCell} text-foreground`}>
         {calc.eupUnit.toFixed(2)}
       </TableCell>
 
       {/* Total EUP – calc */}
       <TableCell
-        className={`min-w-32.5 ${calcCell} bg-green-100/60 font-bold text-green-900 border-x`}
+        className={`min-w-32.5 ${calcCell} bg-muted font-bold text-foreground border-x`}
       >
         {fmtAED(calc.totalEup)}
       </TableCell>
 
       {/* Calc Markup % – read-only */}
       <TableCell
-        className={`min-w-20 ${calcCell} bg-slate-50 text-slate-500`}
+        className={`min-w-20 ${calcCell} bg-muted text-muted-foreground`}
       >
         {calc.calcMarkupPct.toFixed(2)}%
       </TableCell>
@@ -453,7 +453,7 @@ export function LineItemRow({
 
       {/* Rebate Amount – calc */}
       <TableCell
-        className={`min-w-30 ${calcCell} bg-yellow-50/60 text-yellow-800`}
+        className={`min-w-30 ${calcCell} bg-muted text-foreground`}
       >
         {fmtAED(calc.rebateAmt)}
       </TableCell>
@@ -462,12 +462,12 @@ export function LineItemRow({
       {isAfrica && (
         <>
           <TableCell
-            className={`min-w-30 ${calcCell} bg-purple-50/50 text-purple-800`}
+            className={`min-w-30 ${calcCell} bg-secondary/5 text-secondary`}
           >
             {fmtAED(calc.gp)}
           </TableCell>
           {/* FIX: year-aware via yv/yf */}
-          <TableCell className="min-w-20 px-1 py-1 bg-purple-100/50">
+          <TableCell className="min-w-20 px-1 py-1 bg-secondary/10">
             <Input
               className="h-9 text-[11px] text-center w-full"
               type="number"
@@ -478,12 +478,12 @@ export function LineItemRow({
             />
           </TableCell>
           <TableCell
-            className={`min-w-30 ${calcCell} bg-purple-50/50 text-purple-800`}
+            className={`min-w-30 ${calcCell}  bg-secondary/5 text-secondary`}
           >
             {fmtAED(calc.swoGp)}
           </TableCell>
           <TableCell
-            className={`min-w-30 ${calcCell} bg-orange-50/50 text-orange-800`}
+            className={`min-w-30 ${calcCell}  bg-primary/5 text-primary`}
           >
             {fmtAED(calc.partnerGp)}
           </TableCell>

@@ -135,7 +135,7 @@ export function MergedBidBondSection({ sheet }) {
             {/* ── BOTTOM SUMMARY ── */}
             <div className="mt-6 border border-[#E2E8F0] rounded-lg overflow-hidden">
               {/* Net totals — summary.costing.total_net */}
-              <div className="grid grid-cols-1 md:grid-cols-3 divide-x divide-[#E2E8F0]">
+              {/* <div className="grid grid-cols-1 md:grid-cols-3 divide-x divide-[#E2E8F0]">
                 {[
                   { label: "Total Net Year 1", val: totalNet.y1 },
                   { label: "Total Net Year 2", val: totalNet.y2 },
@@ -146,7 +146,7 @@ export function MergedBidBondSection({ sheet }) {
                     <p className="font-mono font-bold text-blue-900">{cur} {fmt(r.val)}</p>
                   </div>
                 ))}
-              </div>
+              </div> */}
 
               {/* Grand Net 3Y — summary.costing.total_net["3y"] */}
               <div className="grid grid-cols-[1fr_200px] px-4 py-3 bg-[#DBEAFE] border-t border-[#BFDBFE] font-bold text-[12px]">
@@ -170,10 +170,10 @@ export function MergedBidBondSection({ sheet }) {
               </div>
 
               {/* grand_total_with_vat */}
-              <div className="w-[300px] flex justify-between px-4 py-3 bg-[#FEE2E2] border border-[#FECACA] rounded text-[13px] font-black text-[#991B1B]">
+              {/* <div className="w-[300px] flex justify-between px-4 py-3 bg-[#FEE2E2] border border-[#FECACA] rounded text-[13px] font-black text-[#991B1B]">
                 <span className="uppercase">Grand Total (Inc. VAT)</span>
                 <span className="font-mono">{cur} {fmt(grandVat)}</span>
-              </div>
+              </div> */}
             </div>
           </AccordionContent>
         </AccordionItem>

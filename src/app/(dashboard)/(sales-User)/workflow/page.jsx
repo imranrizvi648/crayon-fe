@@ -1,7 +1,7 @@
 "use client";
-import { useWorkflow } from "./hooks/useWorkflow";
-import WorkflowSidebar from "./components/WorkflowSidebar";
-import WorkflowDetail from "./components/WorkflowDetail";
+import { useWorkflow } from "./_hooks/useWorkflow";
+import WorkflowSidebar from "./_components/WorkflowSidebar";
+import WorkflowDetail from "./_components/WorkflowDetail";
 import { LayoutDashboard } from "lucide-react"; // 1. Icon import kiya
 
 export default function WorkflowPage() {

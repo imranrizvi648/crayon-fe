@@ -6,9 +6,16 @@ import { Select as SelectPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
-function Select({
-  ...props
-}) {
+function Select({ ...props }) {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Agar abhi hydration nahi hui to khali render karein ya loading state
+  if (!mounted) return null 
+
   return <SelectPrimitive.Root data-slot="select" {...props} />;
 }
 

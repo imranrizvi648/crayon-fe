@@ -53,41 +53,41 @@ export function SummaryFooter({
     `AED ${Number(v || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
-    <TableRow className="bg-slate-100 border-t-2 border-slate-300 font-bold text-[11px]">
+    <TableRow className="bg-muted border-t-2 border-border font-bold text-[11px]">
       <TableCell
         colSpan={11}
-        className="py-2 pr-4 text-right text-slate-600 uppercase tracking-wide text-xs"
+        className="py-2 pr-4 text-right text-muted-foreground uppercase tracking-wide text-xs"
       >
         TOTALS:
       </TableCell>
-      <TableCell className="bg-blue-200 text-center text-blue-900 py-2 whitespace-nowrap">
+      <TableCell className="bg-secondary/20 text-center text-secondary py-2 whitespace-nowrap">
         {fmt(totNet)}
       </TableCell>
-      <TableCell className="bg-blue-200 text-center text-blue-900 py-2 whitespace-nowrap border-r">
+      <TableCell className="bg-secondary/20 text-center text-secondary py-2 whitespace-nowrap border-r">
         {fmt(totErp)}
       </TableCell>
-      <TableCell className="bg-yellow-200 text-center py-2">
+      <TableCell className="bg-muted text-center py-2">
         {totQty.toLocaleString()}
       </TableCell>
       <TableCell />
-      <TableCell className="bg-green-200 text-center text-green-900 py-2 whitespace-nowrap border-x">
+      <TableCell className="bg-primary/10 text-center text-primary py-2 whitespace-nowrap border-x">
         {fmt(totEup)}
       </TableCell>
-      <TableCell className="bg-slate-200" />
-      <TableCell className="bg-slate-200 border-l" />
-      <TableCell className="bg-yellow-100 text-center text-yellow-800 py-2 whitespace-nowrap">
+      <TableCell className="bg-muted" />
+      <TableCell className="bg-muted border-l" />
+      <TableCell className="bg-muted text-center text-foreground py-2 whitespace-nowrap">
         {fmt(totRebate)}
       </TableCell>
       {isAfrica && (
         <>
-          <TableCell className="bg-purple-100 text-center text-purple-800 py-2 whitespace-nowrap">
+          <TableCell className="bg-secondary/10 text-center text-secondary py-2 whitespace-nowrap">
             {fmt(totGp)}
           </TableCell>
-          <TableCell className="bg-purple-200" />
-          <TableCell className="bg-purple-100 text-center text-purple-800 py-2 whitespace-nowrap">
+          <TableCell className="bg-secondary/10" />
+          <TableCell className="bg-secondary/10 text-center text-secondary py-2 whitespace-nowrap">
             {fmt(totSwoGp)}
           </TableCell>
-          <TableCell className="bg-orange-100 text-center text-orange-800 py-2 whitespace-nowrap">
+          <TableCell className="bg-primary/10 text-center text-primary py-2 whitespace-nowrap">
             {fmt(totPartnerGp)}
           </TableCell>
         </>
@@ -455,15 +455,15 @@ export function LineItemsSection({
             variant="outline"
             size="sm"
             onClick={() => fileInputRef.current?.click()}
-            className="text-green-700 bg-green-50 border-green-300 gap-2 h-9 font-semibold"
+            className="text-secondary bg-muted border-border gap-2 h-9 font-semibold"
           >
             <FileUp size={14} /> Import Excel
           </Button>
         </div>
-        <div className="text-[11px] text-slate-500 flex items-center gap-1">
-          <Info size={13} className="text-blue-400" />
+        <div className="text-[11px] text-muted-foreground flex items-center gap-1">
+          <Info size={13} className="text-secondary" />
           {isRamped ? (
-            <span className="font-bold text-blue-700">
+            <span className="font-bold text-secondary">
               {activeYear.replace("year", "Year ")} active
             </span>
           ) : (
@@ -639,7 +639,7 @@ export function LineItemsSection({
         variant="outline"
         size="sm"
         onClick={addRow}
-        className="text-secondary border-secondary font-semibold gap-2"
+        className="text-secondary border-secondary/30 font-semibold gap-2"
       >
         <Plus size={13} /> Add Product Row
       </Button>

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useCostingSheets } from "../../hooks/useCostingSheets";
+import { useCostingSheets } from "../../_hooks/useCostingSheets";
 import { 
   ChevronLeft, 
   Loader2, 
@@ -19,27 +19,27 @@ import {
 } from "@/components/ui/accordion";
 
 // --- Tab Components Imports ---
-import { CostingFormView } from "../../components/preview/CostingFormView";
-import { LineItemsSection } from "../../components/preview/LineItemsSection";
-import { DiscountSection } from "../../components/preview/DiscountSection";
-import { BidBondSection } from "../../components/preview/BidBondSection";
-import { RebateSection } from "../../components/preview/RebateSection";
-import { CIFProductsSection } from "../../components/preview/CIFProductsSection";
-import { MergedSummarySection } from "../../components/preview/MergedSummarySection";
-import { MergedFinancialCards } from "../../components/preview/MergedFinancialCards";
-import { CostPriceSection } from "../../components/preview/CostPriceSection"; 
-import { RetailPriceSection } from "../../components/preview/RetailPriceSection";
-import { GPWithoutRebates } from "../../components/preview/GPWithoutRebates";
-import { GPWithRebates } from "../../components/preview/GPWithRebates";
-import { GPWithCrayonCost } from "../../components/preview/GPWithCrayonCost"; 
-import { MergedBidBondSection } from "../../components/preview/MergedBidBondSection";
-import { EUPWithoutCrayonDiscount } from "../../components/preview/EUPWithoutCrayonDiscount";
-import { CrayonFundingSection } from "../../components/preview/CrayonFundingSection";
-import { PriceQuotationTable } from "../../components/preview/PriceQuotationTable";
-import { EUPWithCrayonDiscount } from "../../components/preview/EUPWithCrayonDiscount";
-import { CrayonRebateSection } from "../../components/preview/CrayonRebateSection";
-import { OtherLSPRebate } from "../../components/preview/OtherLSPRebate";
-import { CIFProductsMerged } from "../../components/preview/CIFProductsMerged";
+import { CostingFormView } from "../_components/CostingFormView";
+import { LineItemsSection } from "../_components/LineItemsSection";
+import { DiscountSection } from "../_components/DiscountSection";
+import { BidBondSection } from "../_components/BidBondSection";
+import { RebateSection } from "../_components/RebateSection";
+import { CIFProductsSection } from "../_components/CIFProductsSection";
+import { MergedSummarySection } from "../_components/MergedSummarySection";
+import { MergedFinancialCards } from "../_components/MergedFinancialCards";
+import { CostPriceSection } from "../_components/CostPriceSection"; 
+import { RetailPriceSection } from "../_components/RetailPriceSection";
+import { GPWithoutRebates } from "../_components/GPWithoutRebates";
+import { GPWithRebates } from "../_components/GPWithRebates";
+import { GPWithCrayonCost } from "../_components/GPWithCrayonCost"; 
+import { MergedBidBondSection } from "../_components/MergedBidBondSection";
+import { EUPWithoutCrayonDiscount } from "../_components/EUPWithoutCrayonDiscount";
+import { CrayonFundingSection } from "../_components/CrayonFundingSection";
+import { PriceQuotationTable } from "../_components/PriceQuotationTable";
+import { EUPWithCrayonDiscount } from "../_components/EUPWithCrayonDiscount";
+import { CrayonRebateSection } from "../_components/CrayonRebateSection";
+import { OtherLSPRebate } from "../_components/OtherLSPRebate";
+import { CIFProductsMerged } from "../_components/CIFProductsMerged";
 
 // --- Skeleton Component for Loading State ---
 const SkeletonLoader = () => (

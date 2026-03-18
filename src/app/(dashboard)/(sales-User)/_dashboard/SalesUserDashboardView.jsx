@@ -1,18 +1,18 @@
 "use client";
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react'; // React import ki zarurat nahi, sirf hooks
-import { useDashboard } from "./hook/useDashboard";
-import HeroSection from "./components/HeroSection";
-import StatsGrid from "./components/StatsGrid";
+import { useDashboard } from "./_hook/useDashboard";
+import HeroSection from "./_components/HeroSection";
+import StatsGrid from "./_components/StatsGrid";
 const StatusAnalytics = dynamic(
-  () => import("./components/StatusAnalytics"),
+  () => import("./_components/StatusAnalytics"),
   { 
     ssr: false,
     loading: () => <div className="h-75 w-full bg-slate-100 animate-pulse rounded-xl" /> 
   }
 );
-import RecentSheets from "./components/RecentSheets";
-import ActivityFeed from "./components/ActivityFeed";
+import RecentSheets from "./_components/RecentSheets";
+import ActivityFeed from "./_components/ActivityFeed";
 import { Button } from "@/components/ui/button";
 
 export default function SalesUserDashboardView() {

@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link"; // Link import kiya gaya hai
-import { useCostingSheets } from "./hooks/useCostingSheets";
-import { SheetTable } from "./components/SheetTable";
-import { EditSheetModal } from "./components/EditSheetModal";
+import { useCostingSheets } from "./_hooks/useCostingSheets";
+import { SheetTable } from "./_components/SheetTable";
+
 
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,21 +13,6 @@ import { toast } from "sonner";
 export default function CostingSheetsList() {
   const { data, loading, fetchSheets, deleteSheet, updateSheet, fetchSheetDetail, exportSheet } = useCostingSheets();
   
-
-
-  // Preview States
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewSheet, setPreviewSheet] = useState(null);
-
-  // Edit Modal States
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [selectedSheetId, setSelectedSheetId] = useState(null);
-  const [editFormData, setEditFormData] = useState({
-    opportunity_name: "",
-    discount_year_1: 0,
-    internal_notes: ""
-  });
-
   // Filter States
   const [filters, setFilters] = useState({ 
     template_type: "all", 
@@ -35,30 +20,11 @@ export default function CostingSheetsList() {
     sales_region: "all" 
   });
 
-  // --- HANDLERS ---
+  
 
-  const handlePreviewClick = async (id) => {
-    const res = await fetchSheetDetail(id);
-    if (res.success) {
-      setPreviewSheet(res.data);
-      setShowPreview(true);
-    }
-  };
+ 
 
-  const handleEditClick = (sheet) => {
-    setSelectedSheetId(sheet.id);
-    setEditFormData({
-      opportunity_name: sheet.opportunity,
-      discount_year_1: 0,
-      internal_notes: sheet.notes || ""
-    });
-    setIsEditOpen(true);
-  };
-
-  const handleUpdateSave = async () => {
-    const res = await updateSheet(selectedSheetId, editFormData);
-    if (res.success) setIsEditOpen(false);
-  };
+ 
 
   const handlePageChange = (newPage) => {
     const apiFilters = Object.fromEntries(
@@ -101,7 +67,7 @@ export default function CostingSheetsList() {
         {/* Navigation to Create Page */}
         <Link href="/sheets/create-sheet">
           <Button 
-            className="bg-primary hover:bg-primary/90 text-white rounded shadow-primary/20 px-7 py-4 pr-13 font-bold tracking-wider cursor-pointer"
+            className="bg-secondary hover:bg-secondary/90 text-white rounded shadow-primary/20 px-7 py-4 pr-13 font-bold tracking-wider cursor-pointer"
           >
             <Plus size={15} className="mr-2" /> New Sheet
           </Button>
@@ -162,23 +128,12 @@ export default function CostingSheetsList() {
           pagination={data.pagination} 
           onPageChange={handlePageChange} 
           onDelete={deleteSheet}
-          onEdit={handleEditClick} 
-          onPreview={handlePreviewClick}
+      
           onExport={exportSheet}
         />
       </div>
 
-      {/* --- MODALS --- */}
-
-     
-
-      <EditSheetModal 
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        formData={editFormData}
-        setFormData={setEditFormData}
-        onSave={handleUpdateSave}
-      />
+  
     </div>
   );
 }
